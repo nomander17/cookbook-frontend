@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import axios from "axios";
 import LandingBook from "./../../assets/landing_book.jpg";
 import NavBar from "../../components/NavBar";
 
@@ -35,11 +35,22 @@ const Landing = () => {
 };
 
 const LoginForm = ({ setCurrentForm }) => {
-  
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // login handle
     console.log("Login submit pressed");
+    await axios
+      .post("http://localhost:8090/user/login", formData)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   return (
@@ -52,6 +63,10 @@ const LoginForm = ({ setCurrentForm }) => {
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
           required
         />
         <div className="relative">
@@ -60,6 +75,10 @@ const LoginForm = ({ setCurrentForm }) => {
             type="password"
             name="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             required
           />
           <svg
@@ -104,11 +123,17 @@ const LoginForm = ({ setCurrentForm }) => {
 };
 
 const RegistrationForm = ({ setCurrentForm }) => {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // forgot password submission logic here
+    // registration submission logic here
     console.log("Register button clicked");
+    console.log("Form Data:", formData);
   };
 
   return (
@@ -121,6 +146,10 @@ const RegistrationForm = ({ setCurrentForm }) => {
           type="text"
           name="username"
           placeholder="Username"
+          value={formData.username}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
           required
         />
         <input
@@ -128,6 +157,10 @@ const RegistrationForm = ({ setCurrentForm }) => {
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
           required
         />
         <div className="relative">
@@ -136,6 +169,10 @@ const RegistrationForm = ({ setCurrentForm }) => {
             type="password"
             name="password"
             placeholder="Password"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, [e.target.name]: e.target.value })
+            }
             required
           />
           <svg
@@ -151,7 +188,7 @@ const RegistrationForm = ({ setCurrentForm }) => {
             <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
           </svg>
         </div>
-        <button className="bg-accent rounded-xl text-zinc-50 py-2 hover:scale-105 duration -300">
+        <button className="bg-accent rounded-xl text-zinc-50 py-2 hover:scale-105 duration-300">
           Register
         </button>
       </form>
@@ -170,10 +207,15 @@ const RegistrationForm = ({ setCurrentForm }) => {
 };
 
 const ForgotPasswordForm = ({ setCurrentForm }) => {
+  const [formData, setFormData] = useState({
+    email: "",
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // forgot password submission logic here
     console.log("Forgot password form submitted");
+    console.log("Form Data:", formData);
   };
 
   return (
@@ -186,6 +228,10 @@ const ForgotPasswordForm = ({ setCurrentForm }) => {
           type="email"
           name="email"
           placeholder="Email"
+          value={formData.email}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
           required
         />
         <button
