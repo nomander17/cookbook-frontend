@@ -1,6 +1,6 @@
 import { useState } from "react";
 import LandingBook from "./../../assets/landing_book.jpg";
-import NavBar from "../../components/NavBar";
+import NavBar from "./../../components/NavBar";
 import { LoginForm } from "./LoginForm";
 import { RegistrationForm } from "./RegistrationForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
@@ -25,7 +25,7 @@ const Landing = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <NavBar />
+      <NavBar/>
       <section className="bg-background max-h-screen flex-grow flex items-center justify-center">
         <div className="bg-foreground flex rounded-2xl shadow-lg max-w-3xl p-5 items-center">
           {renderForm()}

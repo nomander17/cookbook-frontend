@@ -11,6 +11,10 @@ module.exports = {
         foreground: "#31363f",
         accent: "#76abae",
         offwhite: "#eeeeee",
+      },
+      fonts: {
+        outfit: ["Outfit", "sans-serif"],
+        poppins: ["Poppins", "sans-serif"]
       }
     },
     container: {
