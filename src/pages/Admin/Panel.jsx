@@ -46,46 +46,51 @@ export default function Panel({ currentTable }) {
             <TableHead key={key} text={key} />
           ))}
         </tr>
-        {Array.isArray(data) && data.map((item, index) => {
-          const idKey = Object.keys(item).find((k) =>
-            k.toLowerCase().includes("id")
-          );
-          const rowId = item[idKey];
-  
-          return (
-            <tr key={index}>
-              {Object.entries(item).map(([key, value], i) => {
-                if (value && typeof value === "object") {
-                  const idKey = Object.keys(value).find((k) =>
-                    k.toLowerCase().includes("id")
-                  );
-                  value = idKey ? value[idKey] : JSON.stringify(value);
-                }
-                return <TableData key={i} text={value} />;
-              })}
-  
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  className="text-indigo-600 hover:text-indigo-900"
-                  onClick={() => handleEdit(rowId)}
-                >
-                  Edit
-                </button>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button
-                  className="text-red-600 hover:text-red-900"
-                  onClick={() => handleDelete(rowId)}
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          );
-        })
-        // Pretty this up
-        || (<div>Empty table.</div>)
-        }
+        {Array.isArray(data) ? (
+          data.map((item, index) => {
+            const idKey = Object.keys(item).find((k) =>
+              k.toLowerCase().includes("id")
+            );
+            const rowId = item[idKey];
+
+            return (
+              <tr key={index}>
+                {Object.entries(item).map(([key, value], i) => {
+                  if (value && typeof value === "object") {
+                    const idKey = Object.keys(value).find((k) =>
+                      k.toLowerCase().includes("id")
+                    );
+                    value = idKey ? value[idKey] : JSON.stringify(value);
+                  }
+                  return <TableData key={i} text={value}/>;
+                })}
+
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button
+                    className="text-indigo-600 hover:text-indigo-900"
+                    onClick={() => handleEdit(rowId)}
+                  >
+                    Edit
+                  </button>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <button
+                    className="text-red-600 hover:text-red-900"
+                    onClick={() => handleDelete(rowId)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            );
+          })
+        ) : (
+          <tr>
+            <td>
+              <div className="text-center mt-5 text-xl">Empty table.</div>
+            </td>
+          </tr>
+        )}
       </table>
     </div>
   );
@@ -93,10 +98,7 @@ export default function Panel({ currentTable }) {
 
 const TableData = ({ text }) => {
   return (
-    <td
-      scope="col"
-      className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200"
-    >
+    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
       {text}
     </td>
   );
