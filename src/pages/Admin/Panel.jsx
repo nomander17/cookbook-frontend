@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import request from "../../axiosHelper";
+import { EditModal } from "./EditModal";
 
 export default function Panel({ currentTable }) {
   const [data, setData] = useState([]);
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     try {
       const response = await request.get(`/admin/${currentTable}`);
       setData(response.data);
@@ -12,19 +13,24 @@ export default function Panel({ currentTable }) {
     } catch (error) {
       console.error(`Error fetching data: ${error}`);
     }
-  };
+  }, [currentTable]);
 
   useEffect(() => {
     fetchData();
-  }, [currentTable]);
+  }, [fetchData]);
 
-  const keys = data[0] ? Object.keys(data[0]) : [];
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingRow, setEditingRow] = useState(null);
+  const [editingRowId, setEditingRowId] = useState(null);
 
-  if (keys.length === 0) {
-    // do something
-  }
+  const handleEdit = (id, row) => {
+    console.log(`${currentTable.slice(0, -1)}Id: ${id}`);
+    console.log(`Row number: ${row}`);
+    setIsEditing(true);
+    setEditingRow(data[row]);
+    setEditingRowId(id);
+  };
 
-  const handleEdit = (id) => {};
   const handleDelete = async (id) => {
     try {
       const response = await request.delete(`/admin/${currentTable}/${id}`);
@@ -35,12 +41,24 @@ export default function Panel({ currentTable }) {
     fetchData();
   };
 
+  const handleUpdate = async (id, updatedData) => {
+    try {
+      const response = await request.put(`/admin/${currentTable}/${id}`, updatedData);
+      console.log(response);
+    } catch (error) {
+      console.log(`Error updating data: ${error}`);
+    }
+    fetchData();
+  };
+
+  const keys = data[0] ? Object.keys(data[0]) : [];
+
   return (
     <div>
-      <h1 className="text-center font-bold text-3xl">
+      <h1 className="text-center my-6 font-bold text-3xl text-slate-200 drop-shadow-md">
         {currentTable.toUpperCase()}
       </h1>
-      <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-gray-200 dark:divide-neutral-700">
+      <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
         <tr>
           {keys.map((key) => (
             <TableHead key={key} text={key} />
@@ -62,44 +80,51 @@ export default function Panel({ currentTable }) {
                     );
                     value = idKey ? value[idKey] : JSON.stringify(value);
                   }
-                  return <TableData key={i} text={value}/>;
+                  return <TableData key={i} text={value} />;
                 })}
 
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <TableData>
                   <button
                     className="text-indigo-600 hover:text-indigo-900"
-                    onClick={() => handleEdit(rowId)}
+                    onClick={() => handleEdit(rowId, index)}
                   >
                     Edit
                   </button>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                </TableData>
+                <TableData>
                   <button
                     className="text-red-600 hover:text-red-900"
                     onClick={() => handleDelete(rowId)}
                   >
                     Delete
                   </button>
-                </td>
+                </TableData>
               </tr>
             );
           })
         ) : (
           <tr>
             <td>
-              <div className="text-center mt-5 text-xl">Empty table.</div>
+              <div className="text-center text-white mt-5 text-xl">Empty table.</div>
             </td>
           </tr>
         )}
       </table>
+      {isEditing && editingRow ? (
+        <EditModal
+          row={editingRow}
+          onClose={() => setIsEditing(false)}
+          onSubmit={(updatedData) => handleUpdate(editingRowId, updatedData)}
+        />
+      ) : null}
     </div>
   );
 }
 
-const TableData = ({ text }) => {
+const TableData = ({ text, children }) => {
   return (
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-800 dark:text-neutral-200">
-      {text}
+    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-200">
+      {text || children}
     </td>
   );
 };
@@ -108,7 +133,7 @@ const TableHead = ({ text }) => {
   return (
     <th
       scope="col"
-      className="px-6 py-3 text-start text-xs font-medium text-gray-500 uppercase dark:text-neutral-500"
+      className="px-6 py-3 text-start text-m font-medium uppercase text-neutral-500"
     >
       {text}
     </th>
