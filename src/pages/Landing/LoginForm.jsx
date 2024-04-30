@@ -16,7 +16,7 @@ export const LoginForm = ({
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
     await request
-      .post("/user/login", formData)
+      .post("/auth/login", formData)
       .then((response) => {
         console.log(response.data);
       })
@@ -79,7 +79,10 @@ export const LoginForm = ({
       </div>
       <button
         className="border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300"
-        onClick={() => setCurrentForm("register")}
+        onClick={() => {
+          setCurrentForm("register");
+          setNotification({});
+        }}
       >
         Register
       </button>
@@ -88,7 +91,10 @@ export const LoginForm = ({
         <p>Forgot password?</p>
         <button
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
-          onClick={() => setCurrentForm("forgotPassword")}
+          onClick={() => {
+            setCurrentForm("forgotPassword");
+            setNotification({});
+          }}
         >
           Reset Password
         </button>

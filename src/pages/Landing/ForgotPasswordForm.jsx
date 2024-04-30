@@ -1,6 +1,7 @@
 import { useState } from "react";
+import Notification from "../../components/Notifications";
 
-export const ForgotPasswordForm = ({ setCurrentForm }) => {
+export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotification }) => {
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -14,6 +15,9 @@ export const ForgotPasswordForm = ({ setCurrentForm }) => {
 
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-offwhite">
+      { notification && (
+        <Notification content={notification.content} category={notification.category} />
+      )}
       <h2 className="font-bold text-2xl">Forgot Password</h2>
       <p className="text-xs mt-4">Enter your email to reset your password</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -37,7 +41,10 @@ export const ForgotPasswordForm = ({ setCurrentForm }) => {
         <p>Remember your password?</p>
         <button
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
-          onClick={() => setCurrentForm("login")}
+          onClick={() => {
+            setCurrentForm("login");
+            setNotification({});
+          }}
         >
           Login
         </button>

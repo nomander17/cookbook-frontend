@@ -1,9 +1,11 @@
 import { useState } from "react";
 import request from "../../axiosHelper";
+import Notification from "../../components/Notifications";
 
 export const RegistrationForm = ({ setCurrentForm, notification, setNotification }) => {
   const [formData, setFormData] = useState({
     username: "",
+    name: "", 
     email: "",
     password: "",
   });
@@ -11,13 +13,22 @@ export const RegistrationForm = ({ setCurrentForm, notification, setNotification
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await request.post("/user/register", formData);
+      const response = await request.post("/auth/register", formData);
       console.log(response);
-      if (response.status===200 && response.data.success) {
+      if (response.status === 200) {
         handleRegisterSuccess(response);
+      } else if (response.status === 400) {
+        setNotification({
+          "category": "error",
+          "content": response.data
+        });
       }
     } catch (error) {
-      setNotification("Something went wrong. Please try again later.")
+      console.log(error);
+      setNotification({
+        "category": "error",
+        "content": error.response.data
+      });
     }
   };
 
@@ -32,6 +43,9 @@ export const RegistrationForm = ({ setCurrentForm, notification, setNotification
 
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-zinc-50">
+      { notification && (
+        <Notification content={notification.content} category={notification.category} />
+      )}
       <h2 className="font-bold text-2xl">Register</h2>
       <p className="text-xs mt-4">Register as a new user</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -41,6 +55,17 @@ export const RegistrationForm = ({ setCurrentForm, notification, setNotification
           name="username"
           placeholder="Username"
           value={formData.username}
+          onChange={(e) =>
+            setFormData({ ...formData, [e.target.name]: e.target.value })
+          }
+          required
+        />
+        <input
+          className="p-2 rounded-xl border text-stone-700"
+          type="text"
+          name="name"
+          placeholder="Name"
+          value={formData.name}
           onChange={(e) =>
             setFormData({ ...formData, [e.target.name]: e.target.value })
           }
@@ -91,7 +116,10 @@ export const RegistrationForm = ({ setCurrentForm, notification, setNotification
         <p>Have an account?</p>
         <button
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
-          onClick={() => setCurrentForm("login")}
+          onClick={() => {
+            setCurrentForm("login");
+            setNotification({});
+          }}
         >
           Login
         </button>
