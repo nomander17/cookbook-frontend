@@ -4,7 +4,7 @@ import { ExpandIcon, LogOut, Minimize2 } from "lucide-react";
 
 const SideBarContext = createContext();
 
-export function Sidebar({ children }) {
+export function SideBar({ children }) {
   const [expanded, setExpanded] = useState(true);
 
   return (
@@ -49,7 +49,7 @@ export function Sidebar({ children }) {
             `}
           >
             <div className="leading-4 text-white">
-              <h4 className="font-semibold text-sm text-gray-600">John Doe</h4>
+              <h4 className="font-semibold text-sm text-white">John Doe</h4>
               <span className="text-sm text-gray-600">@username</span>
             </div>
             <LogOut color="white" />

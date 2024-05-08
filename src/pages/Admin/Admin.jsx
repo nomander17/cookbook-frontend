@@ -1,13 +1,13 @@
 import { MessageSquareMore, NotebookText, ThumbsUp, User } from "lucide-react";
-import { SideBarItem, Sidebar } from "../../components/Sidebar";
 import Panel from "./Panel";
 import { useState } from "react";
+import { SideBar, SideBarItem } from "../../components/SideBar";
 
 const Admin = () => {
     const [currentTable, setCurrentTable] = useState("users");
     return ( 
         <div className="max-w-screen max-h-screen flex">
-            <Sidebar>
+            <SideBar>
                 {/* SideBarItem({user, text, active}) */}
                 <SideBarItem
                   icon={<User />}
@@ -33,7 +33,7 @@ const Admin = () => {
                   active={currentTable === "likes"}
                   onClick={() => {setCurrentTable("likes")}}
                 />
-            </Sidebar>
+            </SideBar>
             <div className="bg-foreground flex-1 h-screen">
                 {/* panel container to stop flow */}
                 <div className="overflow-auto h-screen overflow-x-hidden">
