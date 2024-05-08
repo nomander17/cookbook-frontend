@@ -1,7 +1,7 @@
 import { MessageSquareMore, NotebookText, ThumbsUp, User } from "lucide-react";
 import Panel from "./Panel";
 import { useState } from "react";
-import { SideBar, SideBarItem } from "../../components/SideBar";
+import { SideBar, SideBarItem } from "./../../components/SideBar";
 
 const Admin = () => {
     const [currentTable, setCurrentTable] = useState("users");

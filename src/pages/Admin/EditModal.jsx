@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import autosize from "autosize";
 
 export const EditModal = ({ row, onClose, onSubmit }) => {
   const [formData, setFormData] = useState(row);
@@ -14,6 +15,25 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
     }
 
     setFormData({ ...formData, [name]: parsedValue });
+  };
+
+  const handleImageChange = async (e, key) => {
+    const file = e.target.files[0];
+    const base64Image = await convertImageToBase64(file);
+    setFormData({ ...formData, [key]: base64Image.split(",")[1] });
+  };
+
+  const convertImageToBase64 = (imageFile) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(imageFile);
+    });
   };
 
   const handleSubmit = (e) => {
@@ -67,17 +87,66 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
                   <label className="block text-gray-700 font-bold mb-2">
                     {key}
                   </label>
-                  <input
-                    type="text"
-                    name={key}
-                    value={
-                      typeof formData[key] === "object"
-                        ? JSON.stringify(formData[key], null, 2)
-                        : formData[key]
-                    }
-                    onChange={handleChange}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  />
+                  {key === "image" || key === "avatar" ? (
+                    <div>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => handleImageChange(e, key)}
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      />
+                      {formData[key] && (
+                        <img
+                          src={`data:image/jpeg;base64,${formData[key]}`}
+                          alt="Preview"
+                          className="mt-2 max-w-xs max-h-40"
+                        />
+                      )}
+                    </div>
+                  ) : typeof value === "object" ? (
+                    <div>
+                      {Object.entries(value).map(([subKey, subValue]) => {
+                        if (subKey.toLowerCase().includes("id")) {
+                          return (
+                            <div key={subKey}>
+                              <label className="block text-gray-700 font-bold mb-2">
+                                {subKey}
+                              </label>
+                              <input
+                                type="text"
+                                name={`${key}.${subKey}`}
+                                value={subValue}
+                                onChange={handleChange}
+                                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                readOnly
+                              />
+                            </div>
+                          );
+                        }
+                        return null;
+                      })}
+                    </div>
+                  ) : key.toLowerCase().includes("time") ? (
+                    <input
+                      type="datetime-local"
+                      name={key}
+                      value={formData[key]?.slice(0, 19)}
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    />
+                  ) : (
+                    <textarea
+                      name={key}
+                      value={
+                        typeof formData[key] === "object"
+                          ? JSON.stringify(formData[key], null, 2)
+                          : formData[key]
+                      }
+                      onChange={handleChange}
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      ref={(textarea) => autosize(textarea)}
+                    />
+                  )}
                 </div>
               ))}
               <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

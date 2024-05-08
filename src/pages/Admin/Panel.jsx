@@ -43,7 +43,10 @@ export default function Panel({ currentTable }) {
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      const response = await request.put(`/admin/${currentTable}/${id}`, updatedData);
+      const response = await request.put(
+        `/admin/${currentTable}/${id}`,
+        updatedData
+      );
       console.log(response);
     } catch (error) {
       console.log(`Error updating data: ${error}`);
@@ -58,7 +61,7 @@ export default function Panel({ currentTable }) {
       <h1 className="text-center my-6 font-bold text-3xl text-slate-200 drop-shadow-md">
         {currentTable.toUpperCase()}
       </h1>
-      <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
+      <table className="table-fixed min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
         <tr>
           {keys.map((key) => (
             <TableHead key={key} text={key} />
@@ -74,11 +77,34 @@ export default function Panel({ currentTable }) {
             return (
               <tr key={index}>
                 {Object.entries(item).map(([key, value], i) => {
+                  if (key === "image" || key === "avatar") {
+                    if(value == null) {
+                      return (
+                        <TableData key={i}>
+                          <p>[No image]</p>
+                        </TableData>
+                      )
+                    } else {
+                      return (
+                        <TableData key={i}>
+                          <img
+                            src={`data:image/jpeg;base64,${value}`}
+                            title={`${key}`}
+                            className="max-w-xs max-h-40"
+                          />
+                        </TableData>
+                      );
+                    }
+                  }
                   if (value && typeof value === "object") {
                     const idKey = Object.keys(value).find((k) =>
                       k.toLowerCase().includes("id")
                     );
-                    value = idKey ? value[idKey] : JSON.stringify(value);
+                    value = idKey
+                      ? value[idKey]
+                      : JSON.stringify(value, null, 2).slice(0, 150);
+                  } else if (typeof value === "string") {
+                    value = value.slice(0, 150) + (value.length > 150 ? " ..." : "");
                   }
                   return <TableData key={i} text={value} />;
                 })}
@@ -105,7 +131,9 @@ export default function Panel({ currentTable }) {
         ) : (
           <tr>
             <td>
-              <div className="text-center text-white mt-5 text-xl">Empty table.</div>
+              <div className="text-center text-white mt-5 text-xl">
+                Empty table.
+              </div>
             </td>
           </tr>
         )}
@@ -122,9 +150,19 @@ export default function Panel({ currentTable }) {
 }
 
 const TableData = ({ text, children }) => {
+  const isByteArray = text instanceof Uint8Array;
+
   return (
-    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-neutral-200">
-      {text || children}
+    <td className="px-6 py-4 text-sm font-medium whitespace-pre-wrap text-neutral-200">
+      {isByteArray ? (
+        <img
+          src={URL.createObjectURL(new Blob([text], { type: "image/jpeg" }))}
+          alt="Table Image"
+          className="max-w-xs max-h-40"
+        />
+      ) : (
+        text || children
+      )}
     </td>
   );
 };
