@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-const colors = require('tailwindcss/colors');
+const colors = require("tailwindcss/colors");
 
 module.exports = {
   mode: "jit",
@@ -14,8 +14,17 @@ module.exports = {
       },
       fonts: {
         outfit: ["Outfit", "sans-serif"],
-        poppins: ["Poppins", "sans-serif"]
-      }
+        poppins: ["Poppins", "sans-serif"],
+      },
+      keyframes: {
+        pop: {
+          "0%, 100%": { transform: "scale(1)" },
+          "50%": { transform: "scale(1.25)" },
+        },
+      },
+      animation: {
+        pop: "pop 0.4s ease-in-out",
+      },
     },
     container: {
       center: true,
