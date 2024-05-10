@@ -96,7 +96,9 @@ export default function Panel({ currentTable }) {
                       );
                     }
                   }
-                  if (value && typeof value === "object") {
+                  if(Array.isArray(value)) {
+                    value = value.length;
+                  } else if (value && typeof value === "object") {
                     const idKey = Object.keys(value).find((k) =>
                       k.toLowerCase().includes("id")
                     );
