@@ -43,7 +43,7 @@ const CreatePost = ({ setPosts }) => {
       }
 
       const postDTO = {
-        userId: 4, // Hardcoded userId for now
+        userId: 1, // Hardcoded userId for now
         text: content,
         image: base64Image ? base64Image.split(",")[1] : null,
       };

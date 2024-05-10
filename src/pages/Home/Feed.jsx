@@ -20,6 +20,11 @@ export const Feed = () => {
     fetchPosts();
   }, []);
 
+  const removePostFromFeed = (postId) => {
+    console.log('Removing post with ID:', postId);
+    setPosts(currentPosts => currentPosts.filter(post => post.postId !== postId));
+  };
+
   return (
     <div className="flex text-center">
       <div className="w-1/2 m-auto bg-foreground">
@@ -32,15 +37,16 @@ export const Feed = () => {
               .sort((a, b) => new Date(b.time) - new Date(a.time))
               .map((post) => (
                 <Post
-                  key={post.id}
+                  key={post.postId}
                   author={{
                     name: post.user.name,
                     username: post.user.username,
                     avatar: post.user.avatar,
                   }}
-                  timestamp={new Date(post.time).toLocaleString()}
-                  content={post.text}
-                  image={post.image}
+                  postId={post.postId}
+                  timeFormat={"relative"}
+                  onClickEnabled={true}
+                  onDelete={() => removePostFromFeed(post.postId)}
                 />
               ))
           )}
