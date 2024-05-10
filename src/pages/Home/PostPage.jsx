@@ -12,21 +12,20 @@ export default function PostPage() {
 
   useEffect(() => {
     if (!post) {
+      const fetchPost = async () => {
+        try {
+          const response = await request.get(`/posts/${postId}`);
+          setPost(response.data);
+        } catch (error) {
+          console.error(`Error fetching post ${postId}: `, error);
+        }
+      };
       fetchPost();
     }
-  }, [post]);
-
-  const fetchPost = async () => {
-    try {
-      const response = await request.get(`/posts/${postId}`);
-      setPost(response.data);
-    } catch (error) {
-      console.error(`Error fetching post ${postId}: `, error);
-    }
-  };
+  }, [post, postId]);
 
   const handlePostDeleted = () => {
-    navigate('/home');
+    navigate("/home");
   };
 
   return (

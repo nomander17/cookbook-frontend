@@ -91,6 +91,7 @@ export default function Panel({ currentTable }) {
                             src={`data:image/jpeg;base64,${value}`}
                             title={`${key}`}
                             className="max-w-xs max-h-40"
+                            alt=""
                           />
                         </TableData>
                       );
@@ -159,7 +160,7 @@ const TableData = ({ text, children }) => {
       {isByteArray ? (
         <img
           src={URL.createObjectURL(new Blob([text], { type: "image/jpeg" }))}
-          alt="Table Image"
+          alt=""
           className="max-w-xs max-h-40"
         />
       ) : (
