@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import request from "../../axiosHelper";
 import CreatePost from "../Posts/CreatePost";
 import Post from "../Posts/Post";
-import NoPosts from "../Posts/NoPosts";
+import NoContent from "../../components/NoContent";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
@@ -31,7 +31,7 @@ export const Feed = () => {
         <CreatePost setPosts={setPosts} />
         <div className="mt-4">
           {posts.length === 0 ? (
-            <NoPosts />
+            <NoContent />
           ) : (
             posts
               .sort((a, b) => new Date(b.time) - new Date(a.time))
