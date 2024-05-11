@@ -1,8 +1,8 @@
 import Admin from "./pages/Admin/Admin";
 import { Home } from "./pages/Home/Home";
-import PostPage from "./pages/Home/PostPage";
 import Landing from "./pages/Landing/Landing";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import PostPage from "./pages/Posts/PostPage";
 
 function App() {
   return (

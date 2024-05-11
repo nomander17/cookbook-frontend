@@ -2,7 +2,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Post from "./Post";
 import { useState, useEffect } from "react";
 import request from "../../axiosHelper";
-import HomeSideBar from "./HomeSideBar";
+import HomeSideBar from "../Home/HomeSideBar";
 
 export default function PostPage() {
   const { postId } = useParams();
@@ -33,7 +33,7 @@ export default function PostPage() {
       <HomeSideBar />
       <div className="bg-foreground flex-1 h-screen">
         {/* panel container to stop flow */}
-        <div className="overflow-auto px-10 mt-10 h-screen overflow-x-hidden">
+        <div className="overflow-auto px-10 mt-10 overflow-x-hidden">
           <Post
             postId={postId}
             timeFormat={"absolute"}

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import request from "../../axiosHelper";
-import CreatePost from "./CreatePost";
-import Post from "./Post";
-import NoPosts from "./NoPosts";
+import CreatePost from "../Posts/CreatePost";
+import Post from "../Posts/Post";
+import NoPosts from "../Posts/NoPosts";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
