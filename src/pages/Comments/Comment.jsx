@@ -42,7 +42,7 @@ const Comment = ({ commentId, postId, author, content, timeFormat }) => {
     };
 
     fetchComments();
-  }, [commentId]);
+  }, [commentId, postId]);
 
   const alreadyLiked = (likes) => {
     return likes.some((like) => like.user.userId === currentUser.userId);

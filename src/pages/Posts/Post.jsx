@@ -148,6 +148,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
         {post.image && (
           <div className="mt-4">
             <img
+              onClick={onClickEnabled ? navigateToPost : undefined}
               className="rounded-lg w-full max-h-96 object-contain"
               src={`data:image/jpeg;base64,${post.image}`}
               alt="Post"
