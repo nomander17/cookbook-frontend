@@ -16,7 +16,7 @@ const currentUser = {
   };
   
 
-const Comment = ({ commentId, postId, author, content, timeFormat }) => {
+const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   const [comment, setComment] = useState({
     user: {
       name: "",
@@ -100,8 +100,15 @@ const Comment = ({ commentId, postId, author, content, timeFormat }) => {
     }
   };
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     console.log("delete pressed");
+    try {
+      const response = await request.delete(`/posts/${postId}/comments/${commentId}`);
+      console.log(response);
+      onDelete();
+    } catch (error) {
+      console.error(`Error deleting post ${postId}`, error);
+    }
   }
 
   return (
