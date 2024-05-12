@@ -113,18 +113,20 @@ const CreatePost = ({ setPosts }) => {
           </div>
         </div>
         {selectedImage && (
-          <div className="mt-4 relative">
-            <img
-              src={URL.createObjectURL(selectedImage)}
-              alt="Selected"
-              className="max-w-full rounded-lg hover:drop-shadow-lg"
-            />
-            <button
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition duration-300"
-              onClick={handleRemoveImage}
-            >
-              <X className="h-4 w-4" />
-            </button>
+          <div className="mt-4 flex justify-center">
+            <div className="relative">
+              <img
+                src={URL.createObjectURL(selectedImage)}
+                alt="Selected"
+                className="max-w-full max-h-96 rounded-lg hover:drop-shadow-lg"
+              />
+              <button
+                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition duration-300"
+                onClick={handleRemoveImage}
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         )}
         {/* buttons tray */}
