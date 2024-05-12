@@ -11,7 +11,7 @@ export function SideBar({ children }) {
   const navigate = useNavigate();
 
   return (
-    <aside className="h-screen">
+    <aside className={`h-screen z-10 transform relative`}>
       <nav className="h-full flex flex-col bg-background shadow-md">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img

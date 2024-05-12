@@ -21,13 +21,15 @@ export const Feed = () => {
   }, []);
 
   const removePostFromFeed = (postId) => {
-    console.log('Removing post with ID:', postId);
-    setPosts(currentPosts => currentPosts.filter(post => post.postId !== postId));
+    console.log("Removing post with ID:", postId);
+    setPosts((currentPosts) =>
+      currentPosts.filter((post) => post.postId !== postId)
+    );
   };
 
   return (
-    <div className="flex text-center">
-      <div className="w-1/2 m-auto bg-foreground">
+    <div className="flex text-center w-full">
+      <div className="md:w-2/3 m-auto w-[90%] bg-foreground">
         <CreatePost setPosts={setPosts} />
         <div className="mt-4">
           {posts.length === 0 ? (

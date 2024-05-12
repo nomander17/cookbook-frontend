@@ -130,63 +130,67 @@ const CreatePost = ({ setPosts }) => {
           </div>
         )}
         {/* buttons tray */}
-        <div className="flex items-center justify-between mt-4">
-          {/* Image button */}
-          <div className="flex items-center">
-            <label htmlFor="imageInput" className="cursor-pointer">
-              <div className="flex items-center text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition duration-300">
-                <Image className="h-6 w-6 mr-2" />
-                <span className="text-sm font-medium">Image</span>
-              </div>
-            </label>
-            <input
-              id="imageInput"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </div>
+        {/* buttons tray */}
+        <div className="mt-4">
+          <div className="flex flex-wrap items-center justify-between">
+            {/* Image button */}
+            <div className="flex items-center mb-2 sm:mb-0">
+              <label htmlFor="imageInput" className="cursor-pointer">
+                <div className="flex items-center text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition duration-300">
+                  <Image className="h-6 w-6 mr-2" />
+                  <span className="text-sm font-medium">Image</span>
+                </div>
+              </label>
+              <input
+                id="imageInput"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </div>
 
-          {/* Preview/Edit button */}
-          <button
-            type="button"
-            onClick={togglePreview}
-            className="flex ml-2 items-center text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition duration-300"
-          >
-            {isPreviewMode ? (
-              <>
-                <Pencil className="h-6 w-6 mr-2" />
-                <span className="text-sm font-medium">Edit</span>
-              </>
-            ) : (
-              <>
-                <SquareGanttChart className="h-5 w-5 mr-2" />
-                <span className="text-sm font-medium">Preview</span>
-              </>
-            )}
-          </button>
-
-          <span
-            className={`ml-4 bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm
-            ${wordCount > wordCountLimit ? "bg-red-600" : ""}
-          `}
-          >
-            {wordCount}/{wordCountLimit}
-          </span>
-
-          {/* Post button */}
-          <div className="ml-auto">
+            {/* Preview/Edit button */}
             <button
-              type="submit"
-              className="bg-blue-600 hover:bg-white hover:text-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center transition duration-300 cursor-pointer
-              disabled:cursor-not-allowed disabled:opacity-50
-            "
-              disabled={wordCount > wordCountLimit}
+              type="button"
+              onClick={togglePreview}
+              className="flex items-center text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition duration-300 mb-2 sm:mb-0 sm:ml-2"
             >
-              <Send className="h-5 w-5 mr-2" />
-              <span className="text-sm font-medium">Post</span>
+              {isPreviewMode ? (
+                <>
+                  <Pencil className="h-6 w-6 mr-2" />
+                  <span className="text-sm font-medium">Edit</span>
+                </>
+              ) : (
+                <>
+                  <SquareGanttChart className="h-5 w-5 mr-2" />
+                  <span className="text-sm font-medium">Preview</span>
+                </>
+              )}
             </button>
+
+            {/* Word count */}
+            <span
+              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 sm:mb-0 sm:ml-4
+        ${wordCount > wordCountLimit ? "bg-red-600" : ""}
+      `}
+            >
+              {wordCount}/{wordCountLimit}
+            </span>
+
+            {/* Post button */}
+            <div className="ml-auto">
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-white hover:text-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center transition duration-300 cursor-pointer
+          disabled:cursor-not-allowed disabled:opacity-50
+        "
+                disabled={wordCount > wordCountLimit}
+              >
+                <Send className="h-5 w-5 mr-2" />
+                <span className="text-sm font-medium">Post</span>
+              </button>
+            </div>
           </div>
         </div>
       </div>
