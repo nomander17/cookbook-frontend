@@ -103,7 +103,7 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
                         />
                       )}
                     </div>
-                  ) : typeof value === "object" ? (
+                  ) : typeof value === "object" && value !== null ? (
                     <div>
                       {Object.entries(value).map(([subKey, subValue]) => {
                         if (subKey.toLowerCase().includes("id")) {
@@ -115,7 +115,7 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
                               <input
                                 type="text"
                                 name={`${key}.${subKey}`}
-                                value={subValue}
+                                value={subValue || ""}
                                 onChange={handleChange}
                                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 readOnly
@@ -130,7 +130,7 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
                     <input
                       type="datetime-local"
                       name={key}
-                      value={formData[key]?.slice(0, 19)}
+                      value={formData[key]?.slice(0, 19) || ""}
                       onChange={handleChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                     />
@@ -140,7 +140,7 @@ export const EditModal = ({ row, onClose, onSubmit }) => {
                       value={
                         typeof formData[key] === "object"
                           ? JSON.stringify(formData[key], null, 2)
-                          : formData[key]
+                          : formData[key] || ""
                       }
                       onChange={handleChange}
                       className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
