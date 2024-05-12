@@ -6,11 +6,13 @@ import HomeSideBar from "../Home/HomeSideBar";
 import Comment from "../Comments/Comment";
 import CreateComment from "../Comments/CreateComment";
 import NoContent from "../../components/NoContent";
+import BottomNavBar from "../../components/BottomNavBar";
 
 export default function PostPage() {
   const { postId } = useParams();
   const location = useLocation();
   const [post, setPost] = useState(location.state?.post || null);
+  const replyInFocus = location.state?.replyInFocus || false;
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
 
@@ -62,23 +64,27 @@ export default function PostPage() {
 
   return (
     <div className="max-w-screen max-h-screen flex overflow-hidden">
-      <HomeSideBar />
+      <div className="hidden md:block">
+        <HomeSideBar />
+      </div>
       <div className="bg-foreground flex-1 h-screen">
         {/* panel container to stop flow */}
-        <div className="overflow-auto h-screen px-10 overflow-x-hidden">
+        <div className="overflow-auto h-screen px-10 overflow-x-hidden pb-16 md:pb-0">
           <div className="mt-10">
-          <Post
-            postId={postId}
-            timeFormat={"absolute"}
-            onClickEnabled={false}
-            onDelete={handlePostDeleted}
-          />
+            <Post
+              postId={postId}
+              timeFormat={"absolute"}
+              onClickEnabled={false}
+              onDelete={handlePostDeleted}
+              truncate={false}
+            />
           </div>
           {/* Create comment */}
           <CreateComment
             postId={postId}
             setComments={setComments}
             onCommentCreated={handleNewPostCreated}
+            replyInFocus={replyInFocus}
           />
           {/* COMMENTS feed here */}
           <div className="mt-4">
@@ -104,6 +110,10 @@ export default function PostPage() {
             )}
           </div>
         </div>
+      </div>
+      {/* bottom navbar for small screens */}
+      <div className="md:hidden fixed bottom-0 left-0 right-0">
+        <BottomNavBar />
       </div>
     </div>
   );

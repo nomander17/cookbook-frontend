@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import request from "../../axiosHelper";
 import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
+import MarkdownIt from "markdown-it";
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -17,13 +18,15 @@ const currentUser = {
   username: "Admin",
 };
 
-const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
+const mdParser = new MarkdownIt();
+
+const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const [post, setPost] = useState({
     user: {
       name: "",
       username: "",
-      avatar: "NO ICON"
-    }
+      avatar: "NO ICON",
+    },
   });
 
   const [liked, setLiked] = useState(false);
@@ -102,6 +105,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
 
   const handleReply = () => {
     console.log("Reply button clicked for post ", postId);
+    navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
   };
 
   const handleDelete = async () => {
@@ -113,10 +117,37 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
     } catch (error) {
       console.error(`Error deleting post ${postId}`, error);
     }
-  }
+  };
 
   const navigateToPost = () => {
     navigate(`/posts/${postId}`, { state: { post } });
+  };
+
+  const truncatePost = (body) => {
+    if (typeof body === "string" && body.trim().length > 0) {
+      const words = body.split(" ");
+      if (words.length > 100) {
+        return {
+          truncatedText: words.slice(0, 100).join(" ") + "...",
+          truncated: true,
+        };
+      }
+      return {
+        truncatedText: body,
+        truncated: false,
+      };
+    }
+    return {
+      truncatedText: "",
+      truncated: false,
+    };
+  };
+
+  const renderMarkdown = (text) => {
+    if (typeof text === "string" && text.trim().length > 0) {
+      return mdParser.render(text);
+    }
+    return "";
   };
 
   return (
@@ -133,7 +164,10 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
           <p className="text-base leading-6 font-medium text-white">
             {post.user.name}
             <span className="text-sm leading-5 font-medium text-gray-400 ml-1">
-              @{post.user.username} - {timeFormat === 'relative' ? relativeTime(post.time) : absoluteTime(post.time)}
+              @{post.user.username} -{" "}
+              {timeFormat === "relative"
+                ? relativeTime(post.time)
+                : absoluteTime(post.time)}
             </span>
           </p>
         </div>
@@ -143,7 +177,29 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
           onClick={onClickEnabled ? navigateToPost : undefined}
           className="text-base font-medium text-offwhite whitespace-pre-wrap text-left"
         >
-          {post.text}
+          {truncate ? (
+            <>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: renderMarkdown(truncatePost(post.text).truncatedText),
+                }}
+              />
+              {truncatePost(post.text).truncated && (
+                <span
+                  className="text-blue-500 cursor-pointer"
+                  onClick={navigateToPost}
+                >
+                  Read more
+                </span>
+              )}
+            </>
+          ) : (
+            <div
+              dangerouslySetInnerHTML={{
+                __html: renderMarkdown(post.text),
+              }}
+            />
+          )}
         </div>
         {post.image && (
           <div className="mt-4">
@@ -179,15 +235,15 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
             <MessageSquareReply className="mr-2" />
             Reply
           </button>
-        {post.user.userId === currentUser.userId && (
-          <button
-            className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
-            onClick={handleDelete}
-          >
-            <Trash className="mr-2" />
-            Delete
-          </button>
-        )}
+          {post.user.userId === currentUser.userId && (
+            <button
+              className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+              onClick={handleDelete}
+            >
+              <Trash className="mr-2" />
+              Delete
+            </button>
+          )}
         </div>
       </div>
     </div>

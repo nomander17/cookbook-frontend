@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import request from "../../axiosHelper";
 import { EditModal } from "./EditModal";
+import { TableHead, TableData } from "./TableComponents";
 
 export default function Panel({ currentTable }) {
   const [data, setData] = useState([]);
@@ -61,7 +62,7 @@ export default function Panel({ currentTable }) {
       <h1 className="text-center my-6 font-bold text-3xl text-slate-200 drop-shadow-md">
         {currentTable.toUpperCase()}
       </h1>
-      <table className="table-fixed min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
+      <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
         <tr>
           {keys.map((key) => (
             <TableHead key={key} text={key} />
@@ -151,32 +152,3 @@ export default function Panel({ currentTable }) {
     </div>
   );
 }
-
-const TableData = ({ text, children }) => {
-  const isByteArray = text instanceof Uint8Array;
-
-  return (
-    <td className="px-6 py-4 text-sm font-medium whitespace-pre-wrap text-neutral-200">
-      {isByteArray ? (
-        <img
-          src={URL.createObjectURL(new Blob([text], { type: "image/jpeg" }))}
-          alt=""
-          className="max-w-xs max-h-40"
-        />
-      ) : (
-        text || children
-      )}
-    </td>
-  );
-};
-
-const TableHead = ({ text }) => {
-  return (
-    <th
-      scope="col"
-      className="px-6 py-3 text-start text-m font-medium uppercase text-neutral-500"
-    >
-      {text}
-    </th>
-  );
-};

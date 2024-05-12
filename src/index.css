@@ -12,3 +12,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.image-transition {
+  @apply opacity-0 transform translate-x-full transition-all duration-500 ease-in-out;
+}
+
+.image-transition.active {
+  @apply opacity-100 translate-x-0;
+}

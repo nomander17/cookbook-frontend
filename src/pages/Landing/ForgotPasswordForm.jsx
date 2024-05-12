@@ -13,6 +13,20 @@ export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotificati
     console.log("Form Data:", formData);
   };
 
+  const handleEmailChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const validateEmail = (e) => {
+      const email = e.target.value;
+      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
+      if (!emailRegex.test(email)) {
+        e.target.setCustomValidity("Please enter a valid email address.");
+      } else {
+        e.target.setCustomValidity("");
+      }
+    };
+    validateEmail(e);
+  };
+
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-offwhite">
       { notification && (
@@ -22,12 +36,12 @@ export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotificati
       <p className="text-xs mt-4">Enter your email to reset your password</p>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
-          className="p-2 mt-8 rounded-xl border text-stone-700"
+          className="p-2 mt-8 text-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 invalid:focus:ring-red-600"
           type="email"
           name="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, [e.target.name]: e.target.value })}
+          onChange={(e) => handleEmailChange(e)}
           required />
         <button
           type="submit"

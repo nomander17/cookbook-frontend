@@ -1,22 +1,26 @@
 import { createContext, useContext, useState } from "react";
 import Logo from "./../assets/logo-no-background.png";
 import { ExpandIcon, LogOut, Minimize2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const SideBarContext = createContext();
 
 export function SideBar({ children }) {
   const [expanded, setExpanded] = useState(true);
 
+  const navigate = useNavigate();
+
   return (
-    <aside className="h-screen">
+    <aside className={`h-screen z-10 transform relative`}>
       <nav className="h-full flex flex-col bg-background shadow-md">
         <div className="p-4 pb-2 flex justify-between items-center">
           <img
             src={Logo}
-            className={`overflow-hidden transition-all ${
+            className={`overflow-hidden hover:cursor-pointer transition-all ${
               expanded ? "w-32" : "w-0"
             }`}
             alt="logo"
+            onClick={() => navigate("/home")}
           />
           <button
             className="rounded-xl"
