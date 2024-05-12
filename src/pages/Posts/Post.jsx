@@ -102,6 +102,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
 
   const handleReply = () => {
     console.log("Reply button clicked for post ", postId);
+    navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
   };
 
   const handleDelete = async () => {

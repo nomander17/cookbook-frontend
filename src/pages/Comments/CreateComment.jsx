@@ -6,7 +6,7 @@ const currentUser = {
     userId: 2,
 }
 
-const CreateComment = ({ postId, setComments }) => {
+const CreateComment = ({ postId, setComments, replyInFocus }) => {
   const [content, setContent] = useState("");
 
   const handleContentChange = (event) => {
@@ -43,12 +43,12 @@ const CreateComment = ({ postId, setComments }) => {
           </div>
           <div className="flex-1">
             <textarea
-              className="bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg"
+              className="bg-transparent p-3 max-h-52 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg"
               value={content}
               onChange={handleContentChange}
               placeholder="Add a comment..."
               ref={(textarea) => autosize(textarea)}
-              style={{ maxHeight: "200px" }} // Set the maximum height limit
+              autoFocus={replyInFocus}
             ></textarea>
           </div>
           {/* Move the button next to the textarea */}

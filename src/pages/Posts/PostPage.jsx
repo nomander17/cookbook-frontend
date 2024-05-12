@@ -11,6 +11,7 @@ export default function PostPage() {
   const { postId } = useParams();
   const location = useLocation();
   const [post, setPost] = useState(location.state?.post || null);
+  const [replyInFocus, setReplyInFocus] = useState(location.state?.replyInFocus || false);
   const [comments, setComments] = useState([]);
   const navigate = useNavigate();
 
@@ -79,6 +80,7 @@ export default function PostPage() {
             postId={postId}
             setComments={setComments}
             onCommentCreated={handleNewPostCreated}
+            replyInFocus={replyInFocus}
           />
           {/* COMMENTS feed here */}
           <div className="mt-4">
