@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import request from "../../axiosHelper";
 import { useEffect } from "react";
-import { absoluteTime, relativeTime } from "./timeFormat";
+import { absoluteTime, relativeTime } from "../Home/timeFormat";
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -13,7 +13,7 @@ import { absoluteTime, relativeTime } from "./timeFormat";
 
 // for now it is 1
 const currentUser = {
-  userId: 1,
+  userId: 2,
   username: "Admin",
 };
 
@@ -148,6 +148,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete }) => {
         {post.image && (
           <div className="mt-4">
             <img
+              onClick={onClickEnabled ? navigateToPost : undefined}
               className="rounded-lg w-full max-h-96 object-contain"
               src={`data:image/jpeg;base64,${post.image}`}
               alt="Post"

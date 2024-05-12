@@ -1,6 +1,6 @@
 import { CookingPot } from "lucide-react";
 
-export default function NoPosts() {
+export default function NoContent() {
   return (
     <div className="flex flex-col items-center mt-20 justify-center text-offwhite">
       <CookingPot className="h-24 w-24 mb-4" />

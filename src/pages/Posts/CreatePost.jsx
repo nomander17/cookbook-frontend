@@ -3,6 +3,20 @@ import React, { useState } from "react";
 import request from "../../axiosHelper";
 import autosize from "autosize";
 
+// Current userId is the user currently logged in
+// import jwt_decode from "jwt-decode";
+
+// const token = localStorage.getItem('token');
+// const currentUser = token ? jwt_decode(token) : null;
+// maybe the root will handle this with useContext?
+
+// for now it is 1
+
+const currentUser = {
+  userId: 2,
+  username: "Admin",
+};
+
 const CreatePost = ({ setPosts }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
@@ -43,7 +57,7 @@ const CreatePost = ({ setPosts }) => {
       }
 
       const postDTO = {
-        userId: 1, // Hardcoded userId for now
+        userId: currentUser.userId,
         text: content,
         image: base64Image ? base64Image.split(",")[1] : null,
       };
