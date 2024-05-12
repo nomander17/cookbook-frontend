@@ -15,6 +15,9 @@
     h4 {
         @apply text-lg;
     }
+    a {
+        @apply text-accent underline;
+    }
 }
 
 @layer components {

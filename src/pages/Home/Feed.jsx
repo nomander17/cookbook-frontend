@@ -47,6 +47,7 @@ export const Feed = () => {
                   timeFormat={"relative"}
                   onClickEnabled={true}
                   onDelete={() => removePostFromFeed(post.postId)}
+                  truncate={true}
                 />
               ))
           )}

@@ -9,6 +9,7 @@
     "autosize": "^6.0.1",
     "axios": "^1.6.8",
     "lucide-react": "^0.376.0",
+    "markdown-it": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",

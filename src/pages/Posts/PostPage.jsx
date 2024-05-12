@@ -73,6 +73,7 @@ export default function PostPage() {
             timeFormat={"absolute"}
             onClickEnabled={false}
             onDelete={handlePostDeleted}
+            truncate={false}
           />
           </div>
           {/* Create comment */}
