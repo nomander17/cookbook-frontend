@@ -1,7 +1,8 @@
 import { useState } from "react";
-import request from "../../axiosHelper";
 import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { requestNoAuth } from "../../axiosHelper";
 
 export const LoginForm = ({
   setCurrentForm,
@@ -14,6 +15,7 @@ export const LoginForm = ({
   });
 
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -52,10 +54,13 @@ export const LoginForm = ({
     e.preventDefault();
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
-    await request
+    await requestNoAuth
       .post("/auth/login", formData)
       .then((response) => {
         console.log(response.data);
+        localStorage.setItem("token", response.data.jwtToken);
+        localStorage.setItem("username", response.data.username);
+        navigate("/home");
       })
       .catch((error) => {
         console.log(error);

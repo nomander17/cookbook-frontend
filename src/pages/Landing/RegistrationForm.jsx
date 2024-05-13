@@ -9,7 +9,7 @@ export const RegistrationForm = ({
   setNotification,
 }) => {
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     name: "",
     email: "",
     password: "",
@@ -95,9 +95,9 @@ export const RegistrationForm = ({
         <input
           className="p-2 mt-8 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-stone-700"
           type="text"
-          name="username"
+          name="userName"
           placeholder="Username"
-          value={formData.username}
+          value={formData.userName}
           onChange={(e) =>
             setFormData({ ...formData, [e.target.name]: e.target.value })
           }
