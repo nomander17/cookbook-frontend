@@ -10,7 +10,7 @@ export const LoginForm = ({
   setNotification,
 }) => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
@@ -36,20 +36,10 @@ export const LoginForm = ({
     validatePassword(e);
   };
 
-  const handleEmailChange = (e) => {
+  const handleUsernameChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    const validateEmail = (e) => {
-      const email = e.target.value;
-      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-      if (!emailRegex.test(email)) {
-        e.target.setCustomValidity("Please enter a valid email address.");
-      } else {
-        e.target.setCustomValidity("");
-      }
-    };
-    validateEmail(e);
-  };
-
+  }
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login submit pressed");
@@ -80,12 +70,12 @@ export const LoginForm = ({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           className="p-2 mt-8 text-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 invalid:focus:ring-red-600"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
+          type="username"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
           onChange={(e) => 
-            handleEmailChange(e)
+            handleUsernameChange(e)
           }
           required
         />
