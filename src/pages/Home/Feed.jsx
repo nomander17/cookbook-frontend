@@ -3,14 +3,20 @@ import CreatePost from "../Posts/CreatePost";
 import Post from "../Posts/Post";
 import NoContent from "../../components/NoContent";
 import axios from "../../api/axios";
+import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
+  const authHeader = useAuthHeader();
 
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get("/posts");
+        const response = await axios.get("/posts", {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);

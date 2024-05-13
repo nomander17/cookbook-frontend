@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import axios from "../../api/axios";
 import autosize from "autosize";
 import MarkdownIt from "markdown-it";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -26,6 +27,7 @@ const CreatePost = ({ setPosts }) => {
   const [isPreviewMode, setIsPreviewMode] = useState(false);
   const [wordCount, setWordCount] = useState(0);
   const wordCountLimit = 2800;
+  const authHeader = useAuthHeader();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -69,8 +71,16 @@ const CreatePost = ({ setPosts }) => {
         image: base64Image ? base64Image.split(",")[1] : null,
       };
 
-      await axios.post("/posts", postDTO);
-      const resposnse = await axios.get("/posts");
+      await axios.post("/posts", postDTO, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
+      const resposnse = await axios.get("/posts", {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       setPosts(resposnse.data);
       setContent("");
       setSelectedImage(null);

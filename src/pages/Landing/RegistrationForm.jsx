@@ -3,7 +3,7 @@ import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
 import axios from "axios";
 
-const BASE_URL = "http://localhost:8090/api"
+const BASE_URL = "http://localhost:8090/api";
 
 export const RegistrationForm = ({
   setCurrentForm,
@@ -121,9 +121,7 @@ export const RegistrationForm = ({
           name="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) =>
-            handleEmailChange(e)
-          }
+          onChange={(e) => handleEmailChange(e)}
           required
         />
         <div className="relative">
@@ -133,9 +131,7 @@ export const RegistrationForm = ({
             name="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) =>
-              handlePasswordChange(e)
-            }
+            onChange={(e) => handlePasswordChange(e)}
             required
           />
           <button

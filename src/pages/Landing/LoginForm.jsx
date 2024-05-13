@@ -3,8 +3,9 @@ import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import useSignIn from 'react-auth-kit/hooks/useSignIn';
 
-const BASE_URL = "http://localhost:8090/api"
+const BASE_URL = "http://localhost:8090/api";
 
 export const LoginForm = ({
   setCurrentForm,
@@ -15,6 +16,8 @@ export const LoginForm = ({
     username: "",
     password: "",
   });
+
+  const signIn = useSignIn();
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -40,23 +43,28 @@ export const LoginForm = ({
 
   const handleUsernameChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
-  
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
-    await axios
-      .post(`${BASE_URL}/auth/login`, formData)
-      .then((response) => {
-        console.log(response.data);
-        localStorage.setItem("token", response.data.jwtToken);
-        localStorage.setItem("username", response.data.username);
-        navigate("/home");
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/login`, formData);
+      console.log(response.data);
+      signIn({
+        auth: {
+          token: response.data.jwtToken,
+          tokenType: 'Bearer',
+        },
+        userState: {
+          username: response.data.username,
+      }
       });
+      navigate("/home");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -76,9 +84,7 @@ export const LoginForm = ({
           name="username"
           placeholder="Username"
           value={formData.username}
-          onChange={(e) => 
-            handleUsernameChange(e)
-          }
+          onChange={(e) => handleUsernameChange(e)}
           required
         />
         <div className="relative">
@@ -88,9 +94,7 @@ export const LoginForm = ({
             name="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => 
-              handlePasswordChange(e)
-            }
+            onChange={(e) => handlePasswordChange(e)}
             required
           />
           <button

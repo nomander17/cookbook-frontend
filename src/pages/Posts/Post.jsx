@@ -5,7 +5,7 @@ import axios from "../../api/axios";
 import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
-
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -31,13 +31,17 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   });
 
   const [liked, setLiked] = useState(false);
-
   const navigate = useNavigate();
+  const authHeader = useAuthHeader();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await axios.get(`/posts/${postId}`);
+        const response = await axios.get(`/posts/${postId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         setPost(response.data);
         setLiked(alreadyLiked(response.data.likes));
       } catch (error) {
@@ -60,7 +64,11 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         (like) => like.user.userId === currentUser.userId
       )?.likeId;
       try {
-        await axios.delete(`/posts/${post.postId}/likes/${likeId}`);
+        await axios.delete(`/posts/${post.postId}/likes/${likeId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         setLiked(false);
         // Update post likes by filtering out the current user's like
         setPost({
@@ -75,10 +83,18 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     } else {
       // Liking post
       try {
-        const response = await axios.post(`/posts/${post.postId}/likes`, {
-          userId: currentUser.userId,
-          postId: post.postId,
-        });
+        const response = await axios.post(
+          `/posts/${post.postId}/likes`,
+          {
+            userId: currentUser.userId,
+            postId: post.postId,
+          },
+          {
+            headers: {
+              Authorization: authHeader,
+            },
+          }
+        );
         setLiked(true);
         // Update post likes by adding the new like
         setPost({
@@ -112,7 +128,11 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const handleDelete = async () => {
     console.log("Delete button clicked for post ", postId);
     try {
-      const response = await axios.delete(`/posts/${postId}`);
+      const response = await axios.delete(`/posts/${postId}`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       console.log(response);
       onDelete();
     } catch (error) {

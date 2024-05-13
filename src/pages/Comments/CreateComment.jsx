@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "../../api/axios";
 import autosize from "autosize";
 import { Image, X } from "lucide-react";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 const currentUser = {
   userId: 2,
@@ -10,6 +11,7 @@ const currentUser = {
 const CreateComment = ({ postId, setComments, replyInFocus }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
+  const authHeader = useAuthHeader();
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
@@ -32,8 +34,16 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
       text: content,
     };
     try {
-      await axios.post(`/posts/${postId}/comments`, commentDTO);
-      const response = await axios.get(`/posts/${postId}/comments`);
+      await axios.post(`/posts/${postId}/comments`, commentDTO, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
+      const response = await axios.get(`/posts/${postId}/comments`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       setComments(response.data);
       setContent("");
     } catch (error) {
