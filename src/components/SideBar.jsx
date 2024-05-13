@@ -2,12 +2,12 @@ import { createContext, useContext, useState } from "react";
 import Logo from "./../assets/logo-no-background.png";
 import { ExpandIcon, LogOut, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 const SideBarContext = createContext();
 
 export function SideBar({ children }) {
   const [expanded, setExpanded] = useState(true);
-
+  const signOut = useSignOut();
   const navigate = useNavigate();
 
   return (
@@ -56,7 +56,15 @@ export function SideBar({ children }) {
               <h4 className="font-semibold text-sm text-white">John Doe</h4>
               <span className="text-sm text-gray-600">@username</span>
             </div>
-            <LogOut color="white" />
+            <div className="hover:cursor-pointer">
+              <LogOut
+                color="white"
+                onClick={() => {
+                  signOut();
+                  navigate("/");
+                }}
+              />
+            </div>
           </div>
         </div>
       </nav>
@@ -66,7 +74,7 @@ export function SideBar({ children }) {
 
 export function SideBarItem({ icon, text, active, onClick }) {
   const { expanded } = useContext(SideBarContext);
-  
+
   return (
     <li
       className={`

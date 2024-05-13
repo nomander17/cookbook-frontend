@@ -1,8 +1,11 @@
 import { Feed } from "./Feed";
 import HomeSideBar from "./HomeSideBar";
 import BottomNavBar from "../../components/BottomNavBar";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const Home = () => {
+  const authUser = useAuthUser();
+  console.log("From home: ", authUser);
   return (
     <div className="flex flex-col md:flex-row max-w-screen max-h-screen">
       <div className="hidden md:block">

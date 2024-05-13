@@ -3,7 +3,8 @@ import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import useSignIn from 'react-auth-kit/hooks/useSignIn';
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const BASE_URL = "http://localhost:8090/api";
 
@@ -55,17 +56,24 @@ export const LoginForm = ({
       signIn({
         auth: {
           token: response.data.jwtToken,
-          tokenType: 'Bearer',
+          tokenType: "Bearer",
         },
         userState: {
-          username: response.data.username,
-      }
+          user: {
+            username: response.data.username,
+            userId: response.data.userId
+          },
+        },
       });
-      navigate("/home");
+      // navigate("/home");
+
     } catch (error) {
       console.log(error);
     }
   };
+
+  const user = useAuthUser();
+  console.log("Logged in with authuser: ", user);
 
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-offwhite">

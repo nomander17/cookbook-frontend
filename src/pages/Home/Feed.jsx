@@ -4,10 +4,13 @@ import Post from "../Posts/Post";
 import NoContent from "../../components/NoContent";
 import axios from "../../api/axios";
 import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
   const authHeader = useAuthHeader();
+  const authUser = useAuthUser();
+  console.log("From feed: ", authUser);
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -51,6 +54,7 @@ export const Feed = () => {
                     username: post.user.username,
                     avatar: post.user.avatar,
                   }}
+                  authUser={authUser}
                   postId={post.postId}
                   timeFormat={"relative"}
                   onClickEnabled={true}

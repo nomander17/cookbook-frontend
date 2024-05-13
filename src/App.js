@@ -9,7 +9,8 @@ import RequireAuth from '@auth-kit/react-router/RequireAuth'
 
 const store = createStore({
   authName: "_auth",
-  authType: "localstorage",
+  authType: "cookie",
+  cookieDomain: window.location.hostname,
   cookieSecure: false,
 });
 
