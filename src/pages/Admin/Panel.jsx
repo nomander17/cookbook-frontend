@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import { EditModal } from "./EditModal";
 import { TableHead, TableData } from "./TableComponents";
 
@@ -8,7 +8,7 @@ export default function Panel({ currentTable }) {
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await request.get(`/admin/${currentTable}`);
+      const response = await axios.get(`/admin/${currentTable}`);
       setData(response.data);
       console.log(response.data);
     } catch (error) {
@@ -34,7 +34,7 @@ export default function Panel({ currentTable }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await request.delete(`/admin/${currentTable}/${id}`);
+      const response = await axios.delete(`/admin/${currentTable}/${id}`);
       console.log(response);
     } catch (error) {
       console.error(`Error deleting data: ${error}`);
@@ -44,7 +44,7 @@ export default function Panel({ currentTable }) {
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      const response = await request.put(
+      const response = await axios.put(
         `/admin/${currentTable}/${id}`,
         updatedData
       );

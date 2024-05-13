@@ -1,7 +1,7 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Post from "./Post";
 import { useState, useEffect } from "react";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import HomeSideBar from "../Home/HomeSideBar";
 import Comment from "../Comments/Comment";
 import CreateComment from "../Comments/CreateComment";
@@ -22,7 +22,7 @@ export default function PostPage() {
     if (!post) {
       const fetchPost = async () => {
         try {
-          const response = await request.get(`/posts/${postId}`);
+          const response = await axios.get(`/posts/${postId}`);
           setPost(response.data);
         } catch (error) {
           console.error(`Error fetching post ${postId}: `, error);
@@ -36,7 +36,7 @@ export default function PostPage() {
     const fetchComments = async () => {
       try {
         console.log("Fetching comments");
-        const response = await request.get(`/posts/${postId}/comments`);
+        const response = await axios.get(`/posts/${postId}/comments`);
         console.log(`/posts/${postId}/comments`);
         console.log(response.data);
         setComments(response.data);

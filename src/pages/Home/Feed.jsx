@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import request from "../../axiosHelper";
 import CreatePost from "../Posts/CreatePost";
 import Post from "../Posts/Post";
 import NoContent from "../../components/NoContent";
+import axios from "../../api/axios";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
@@ -10,7 +10,7 @@ export const Feed = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await request.get("/posts");
+        const response = await axios.get("/posts");
         setPosts(response.data);
       } catch (error) {
         console.error("Error fetching posts:", error);

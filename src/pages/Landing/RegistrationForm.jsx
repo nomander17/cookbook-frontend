@@ -1,7 +1,9 @@
 import { useState } from "react";
-import request from "../../axiosHelper";
 import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
+
+const BASE_URL = "http://localhost:8090/api"
 
 export const RegistrationForm = ({
   setCurrentForm,
@@ -16,7 +18,6 @@ export const RegistrationForm = ({
   });
 
   const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -53,7 +54,7 @@ export const RegistrationForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await request.post("/auth/register", formData);
+      const response = await axios.post(`${BASE_URL}/auth/register`, formData);
       console.log(response);
       if (response.status === 200) {
         handleRegisterSuccess(response);

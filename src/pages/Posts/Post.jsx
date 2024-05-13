@@ -1,10 +1,11 @@
 import { Heart, MessageSquareReply, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
+
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -36,7 +37,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await request.get(`/posts/${postId}`);
+        const response = await axios.get(`/posts/${postId}`);
         setPost(response.data);
         setLiked(alreadyLiked(response.data.likes));
       } catch (error) {
@@ -59,7 +60,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         (like) => like.user.userId === currentUser.userId
       )?.likeId;
       try {
-        await request.delete(`/posts/${post.postId}/likes/${likeId}`);
+        await axios.delete(`/posts/${post.postId}/likes/${likeId}`);
         setLiked(false);
         // Update post likes by filtering out the current user's like
         setPost({
@@ -74,7 +75,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     } else {
       // Liking post
       try {
-        const response = await request.post(`/posts/${post.postId}/likes`, {
+        const response = await axios.post(`/posts/${post.postId}/likes`, {
           userId: currentUser.userId,
           postId: post.postId,
         });
@@ -111,7 +112,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const handleDelete = async () => {
     console.log("Delete button clicked for post ", postId);
     try {
-      const response = await request.delete(`/posts/${postId}`);
+      const response = await axios.delete(`/posts/${postId}`);
       console.log(response);
       onDelete();
     } catch (error) {

@@ -1,7 +1,7 @@
 import { Heart, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 
 // Current userId is the user currently logged in
 // import jwt_decode from "jwt-decode";
@@ -33,7 +33,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await request.get(`/posts/${postId}/comments/${commentId}`);
+        const response = await axios.get(`/posts/${postId}/comments/${commentId}`);
         setComment(response.data);
         setLiked(alreadyLiked(response.data.likes));
       } catch (error) {
@@ -65,7 +65,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
         (like) => like.user.userId === currentUser.userId
       )?.likeId;
       try {
-        await request.delete(`/posts/${postId}/comments/${comment.commentId}/likes/${likeId}`);
+        await axios.delete(`/posts/${postId}/comments/${comment.commentId}/likes/${likeId}`);
         setLiked(false);
         // Update comment likes by filtering out the current user's like
         setComment({
@@ -80,7 +80,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     } else {
       // Liking comment
       try {
-        const response = await request.post(`/posts/${postId}/comments/${comment.commentId}/likes`, {
+        const response = await axios.post(`/posts/${postId}/comments/${comment.commentId}/likes`, {
           userId: currentUser.userId,
           commentId: comment.commentId,
         });
@@ -103,7 +103,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   const handleDelete = async () => {
     console.log("delete pressed");
     try {
-      const response = await request.delete(`/posts/${postId}/comments/${commentId}`);
+      const response = await axios.delete(`/posts/${postId}/comments/${commentId}`);
       console.log(response);
       onDelete();
     } catch (error) {

@@ -1,6 +1,6 @@
 import { Image, Pencil, Send, SquareGanttChart, X } from "lucide-react";
 import React, { useState } from "react";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import autosize from "autosize";
 import MarkdownIt from "markdown-it";
 
@@ -69,8 +69,8 @@ const CreatePost = ({ setPosts }) => {
         image: base64Image ? base64Image.split(",")[1] : null,
       };
 
-      await request.post("/posts", postDTO);
-      const resposnse = await request.get("/posts");
+      await axios.post("/posts", postDTO);
+      const resposnse = await axios.get("/posts");
       setPosts(resposnse.data);
       setContent("");
       setSelectedImage(null);

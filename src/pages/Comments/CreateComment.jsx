@@ -1,5 +1,5 @@
 import { useState } from "react";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import autosize from "autosize";
 import { Image, X } from "lucide-react";
 
@@ -32,8 +32,8 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
       text: content,
     };
     try {
-      await request.post(`/posts/${postId}/comments`, commentDTO);
-      const response = await request.get(`/posts/${postId}/comments`);
+      await axios.post(`/posts/${postId}/comments`, commentDTO);
+      const response = await axios.get(`/posts/${postId}/comments`);
       setComments(response.data);
       setContent("");
     } catch (error) {

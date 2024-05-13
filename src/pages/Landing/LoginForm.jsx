@@ -2,7 +2,9 @@ import { useState } from "react";
 import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { requestNoAuth } from "../../axiosHelper";
+import axios from "axios";
+
+const BASE_URL = "http://localhost:8090/api"
 
 export const LoginForm = ({
   setCurrentForm,
@@ -44,8 +46,8 @@ export const LoginForm = ({
     e.preventDefault();
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
-    await requestNoAuth
-      .post("/auth/login", formData)
+    await axios
+      .post(`${BASE_URL}/auth/login`, formData)
       .then((response) => {
         console.log(response.data);
         localStorage.setItem("token", response.data.jwtToken);
