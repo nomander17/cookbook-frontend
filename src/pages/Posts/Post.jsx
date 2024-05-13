@@ -6,33 +6,37 @@ import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-
-// Current userId is the user currently logged in
-// import jwt_decode from "jwt-decode";
-
-// const token = localStorage.getItem('token');
-// const currentUser = token ? jwt_decode(token) : null;
-
-// for now it is 1
-const currentUser = {
-  userId: 2,
-  username: "Admin",
-};
+import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 
 const mdParser = new MarkdownIt();
 
-const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
+const Post = ({ authUser, postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const [post, setPost] = useState({
     user: {
       name: "",
       username: "",
       avatar: "NO ICON",
     },
+    likes: [
+      {
+        user: {
+          userId: 0,
+        },
+      },
+    ],
   });
 
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
+  // const authUser = useAuthUser();
+
+  const currentUser = {
+    userId: authUser?.userId,
+    username: authUser?.username,
+  };
+
+  console.log("From post: ", currentUser);
 
   useEffect(() => {
     const fetchPost = async () => {
