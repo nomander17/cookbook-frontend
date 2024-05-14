@@ -6,6 +6,7 @@ export const useAuthUserContext = () => useContext(AuthUserContext);
 
 export const AuthUserProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Retrieve authUser from local storage on component mount
@@ -13,6 +14,7 @@ export const AuthUserProvider = ({ children }) => {
     if (storedAuthUser) {
       setAuthUser(JSON.parse(storedAuthUser));
     }
+    setIsLoading(false);
   }, []);
 
   const setAuthUserWithStorage = (user) => {
@@ -25,6 +27,11 @@ export const AuthUserProvider = ({ children }) => {
       localStorage.removeItem('authUser');
     }
   };
+
+  if (isLoading) {
+    // Render a loading state or placeholder while authUser is being retrieved
+    return <div>Loading...</div>;
+  }
 
   return (
     <AuthUserContext.Provider value={{ authUser, setAuthUser: setAuthUserWithStorage }}>
