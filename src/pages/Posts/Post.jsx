@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { useAuthUserContext } from "./../../context/AuthUserContext";
 
 const mdParser = new MarkdownIt();
@@ -27,20 +26,11 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     ],
   });
 
-  const { authUser } = useAuthUserContext();
-  console.log("From new context: ", authUser);
-
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
-  // const authUser = useAuthUser();
-
-  const currentUser = {
-    userId: authUser?.userId,
-    username: authUser?.username,
-  };
-
-  console.log("From post: ", currentUser);
+  
+  const { authUser } = useAuthUserContext();
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -52,6 +42,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         });
         setPost(response.data);
         setLiked(alreadyLiked(response.data.likes));
+        console.log("Fetching post ", postId);
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
       }
@@ -61,7 +52,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   }, [postId]);
 
   const alreadyLiked = (likes) => {
-    return likes.some((like) => like.user.userId === currentUser.userId);
+    return likes.some((like) => like.user.userId === authUser.userId);
   };
 
   const handleLike = async () => {
@@ -69,7 +60,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     if (liked) {
       // Unliking post
       const likeId = post.likes.find(
-        (like) => like.user.userId === currentUser.userId
+        (like) => like.user.userId === authUser.userId
       )?.likeId;
       try {
         await axios.delete(`/posts/${post.postId}/likes/${likeId}`, {
@@ -82,7 +73,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         setPost({
           ...post,
           likes: post.likes.filter(
-            (like) => like.user.userId !== currentUser.userId
+            (like) => like.user.userId !== authUser.userId
           ),
         });
       } catch (error) {
@@ -94,7 +85,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         const response = await axios.post(
           `/posts/${post.postId}/likes`,
           {
-            userId: currentUser.userId,
+            userId: authUser.userId,
             postId: post.postId,
           },
           {
@@ -264,7 +255,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
             <MessageSquareReply className="mr-2" />
             Reply
           </button>
-          {post.user.userId === currentUser.userId && (
+          {post.user.userId === authUser.userId && (
             <button
               className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
               onClick={handleDelete}

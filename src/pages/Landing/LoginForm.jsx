@@ -20,6 +20,7 @@ export const LoginForm = ({
   });
 
   const signIn = useSignIn();
+  const { authUser } = useAuthUserContext();
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -71,14 +72,12 @@ export const LoginForm = ({
         username: response.data.username,
         userId: response.data.userId,
       });
-      // navigate("/home");
+      console.log("From home: ", authUser);
+      navigate("/home");
     } catch (error) {
       console.log(error);
     }
   };
-
-  const user = useAuthUser();
-  console.log("Logged in with authuser: ", user);
 
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-offwhite">

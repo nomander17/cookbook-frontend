@@ -3,18 +3,7 @@ import { useEffect, useState } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-
-// Current userId is the user currently logged in
-// import jwt_decode from "jwt-decode";
-
-// const token = localStorage.getItem('token');
-// const currentUser = token ? jwt_decode(token) : null;
-
-// for now it is 1
-const currentUser = {
-  userId: 2,
-  username: "Admin",
-};
+import { useAuthUserContext } from "../../context/AuthUserContext";
 
 const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   const [comment, setComment] = useState({
@@ -30,6 +19,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
 
   const [liked, setLiked] = useState(false);
   const authHeader = useAuthHeader();
+  const { authUser } = useAuthUserContext();
 
   useEffect(() => {
     const fetchComments = async () => {
@@ -53,7 +43,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   }, [commentId, postId]);
 
   const alreadyLiked = (likes) => {
-    return likes.some((like) => like.user.userId === currentUser.userId);
+    return likes.some((like) => like.user.userId === authUser.userId);
   };
 
   const getProfileImage = () => {
@@ -70,7 +60,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     if (liked) {
       // Unliking comment
       const likeId = comment.likes.find(
-        (like) => like.user.userId === currentUser.userId
+        (like) => like.user.userId === authUser.userId
       )?.likeId;
       try {
         await axios.delete(
@@ -86,7 +76,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
         setComment({
           ...comment,
           likes: comment.likes.filter(
-            (like) => like.user.userId !== currentUser.userId
+            (like) => like.user.userId !== authUser.userId
           ),
         });
       } catch (error) {
@@ -98,7 +88,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
         const response = await axios.post(
           `/posts/${postId}/comments/${comment.commentId}/likes`,
           {
-            userId: currentUser.userId,
+            userId: authUser.userId,
             commentId: comment.commentId,
           },
           {
@@ -193,7 +183,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
             )}
             Like
           </button>
-          {comment.user.userId === currentUser.userId && (
+          {comment.user.userId === authUser.userId && (
             <button
               className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
               onClick={handleDelete}

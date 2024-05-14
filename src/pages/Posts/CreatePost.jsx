@@ -4,21 +4,7 @@ import axios from "../../api/axios";
 import autosize from "autosize";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-
-// Current userId is the user currently logged in
-// import jwt_decode from "jwt-decode";
-
-// const token = localStorage.getItem('token');
-// const currentUser = token ? jwt_decode(token) : null;
-// maybe the root will handle this with useContext?
-
-// for now it is 1
-
-const currentUser = {
-  userId: 2,
-  username: "Admin",
-};
-
+import { useAuthUserContext } from "../../context/AuthUserContext";
 const mdParser = new MarkdownIt();
 
 const CreatePost = ({ setPosts }) => {
@@ -28,6 +14,7 @@ const CreatePost = ({ setPosts }) => {
   const [wordCount, setWordCount] = useState(0);
   const wordCountLimit = 2800;
   const authHeader = useAuthHeader();
+  const  { authUser } = useAuthUserContext();
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -66,7 +53,7 @@ const CreatePost = ({ setPosts }) => {
       }
 
       const postDTO = {
-        userId: currentUser.userId,
+        userId: authUser.userId,
         text: content,
         image: base64Image ? base64Image.split(",")[1] : null,
       };
