@@ -54,7 +54,6 @@ export const Feed = () => {
                     username: post.user.username,
                     avatar: post.user.avatar,
                   }}
-                  authUser={authUser}
                   postId={post.postId}
                   timeFormat={"relative"}
                   onClickEnabled={true}

@@ -7,10 +7,11 @@ import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { useAuthUserContext } from "./../../context/AuthUserContext";
 
 const mdParser = new MarkdownIt();
 
-const Post = ({ authUser, postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
+const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const [post, setPost] = useState({
     user: {
       name: "",
@@ -25,6 +26,9 @@ const Post = ({ authUser, postId, timeFormat, onClickEnabled, onDelete, truncate
       },
     ],
   });
+
+  const { authUser } = useAuthUserContext();
+  console.log("From new context: ", authUser);
 
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();

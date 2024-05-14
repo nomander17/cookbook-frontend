@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
 import useAuthUser from "react-auth-kit/hooks/useAuthUser";
+import { useAuthUserContext } from "../../context/AuthUserContext";
 
 const BASE_URL = "http://localhost:8090/api";
 
@@ -22,6 +23,7 @@ export const LoginForm = ({
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { setAuthUser } = useAuthUserContext();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -61,12 +63,15 @@ export const LoginForm = ({
         userState: {
           user: {
             username: response.data.username,
-            userId: response.data.userId
+            userId: response.data.userId,
           },
         },
       });
+      setAuthUser({
+        username: response.data.username,
+        userId: response.data.userId,
+      });
       // navigate("/home");
-
     } catch (error) {
       console.log(error);
     }

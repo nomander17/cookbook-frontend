@@ -3,11 +3,13 @@ import Logo from "./../assets/logo-no-background.png";
 import { ExpandIcon, LogOut, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+import { useAuthUserContext } from "../context/AuthUserContext";
 const SideBarContext = createContext();
 
 export function SideBar({ children }) {
   const [expanded, setExpanded] = useState(true);
   const signOut = useSignOut();
+  const { setAuthUser } = useAuthUserContext();
   const navigate = useNavigate();
 
   return (
@@ -61,6 +63,7 @@ export function SideBar({ children }) {
                 color="white"
                 onClick={() => {
                   signOut();
+                  setAuthUser(null);
                   navigate("/");
                 }}
               />
