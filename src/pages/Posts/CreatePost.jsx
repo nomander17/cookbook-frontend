@@ -15,7 +15,7 @@ const CreatePost = ({ setPosts }) => {
   const wordCountLimit = 2800;
   const authHeader = useAuthHeader();
   const { authUser } = useAuthUserContext();
-  const [profileImage, setProfileImage] = useState('');
+  const [profileImage, setProfileImage] = useState("");
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -92,7 +92,9 @@ const CreatePost = ({ setPosts }) => {
         const user = response.data;
         if (user.avatar === null) {
           const nameParams = user.name.split(" ").join("+");
-          setProfileImage(`https://ui-avatars.com/api/?name=${nameParams}&background=random`);
+          setProfileImage(
+            `https://ui-avatars.com/api/?name=${nameParams}&background=random`
+          );
         } else {
           setProfileImage(`data:image/jpeg;base64,${user.avatar}`);
         }
@@ -103,7 +105,6 @@ const CreatePost = ({ setPosts }) => {
 
     fetchProfileImage();
   }, [authUser.userId, authHeader]);
-
 
   return (
     <form onSubmit={handleSubmit}>
@@ -151,6 +152,7 @@ const CreatePost = ({ setPosts }) => {
             </div>
           </div>
         )}
+        {/* TODO Dynamic buttons */}
         {/* buttons tray */}
         <div className="mt-4">
           <div className="flex flex-wrap items-center justify-between">
