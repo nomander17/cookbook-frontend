@@ -5,7 +5,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import PostPage from "./pages/Posts/PostPage";
 import createStore from "react-auth-kit/createStore";
 import AuthProvider from "react-auth-kit";
-import RequireAuth from '@auth-kit/react-router/RequireAuth'
+import RequireAuth from "@auth-kit/react-router/RequireAuth";
+import { AuthUserProvider } from "./context/AuthUserContext";
 
 const store = createStore({
   authName: "_auth",
@@ -18,21 +19,25 @@ function App() {
   return (
     <div id="App">
       <AuthProvider store={store}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Landing />}></Route>
-            <Route path="/home" element={
-              <RequireAuth fallbackPath={"/"}>
-                <Home />
-              </RequireAuth>
-            }
-            />
-            {/* <Route path="/home" element={<Home />}></Route> */}
-            {/* Secure these two later */}
-            <Route path="/posts/:postId" element={<PostPage />}></Route>
-            <Route path="/admin" element={<Admin />}></Route>
-          </Routes>
-        </BrowserRouter>
+        <AuthUserProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Landing />}></Route>
+              <Route
+                path="/home"
+                element={
+                  <RequireAuth fallbackPath={"/"}>
+                    <Home />
+                  </RequireAuth>
+                }
+              />
+              {/* <Route path="/home" element={<Home />}></Route> */}
+              {/* Secure these two later */}
+              <Route path="/posts/:postId" element={<PostPage />}></Route>
+              <Route path="/admin" element={<Admin />}></Route>
+            </Routes>
+          </BrowserRouter>
+        </AuthUserProvider>
       </AuthProvider>
     </div>
   );
