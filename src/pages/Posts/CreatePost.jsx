@@ -1,5 +1,5 @@
 import { Image, Pencil, Send, SquareGanttChart, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import autosize from "autosize";
 import MarkdownIt from "markdown-it";
@@ -14,7 +14,8 @@ const CreatePost = ({ setPosts }) => {
   const [wordCount, setWordCount] = useState(0);
   const wordCountLimit = 2800;
   const authHeader = useAuthHeader();
-  const  { authUser } = useAuthUserContext();
+  const { authUser } = useAuthUserContext();
+  const [profileImage, setProfileImage] = useState('');
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -80,6 +81,30 @@ const CreatePost = ({ setPosts }) => {
     setIsPreviewMode(!isPreviewMode);
   };
 
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axios.get(`/users/${authUser.userId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
+        const user = response.data;
+        if (user.avatar === null) {
+          const nameParams = user.name.split(" ").join("+");
+          setProfileImage(`https://ui-avatars.com/api/?name=${nameParams}&background=random`);
+        } else {
+          setProfileImage(`data:image/jpeg;base64,${user.avatar}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user", error);
+      }
+    };
+
+    fetchProfileImage();
+  }, [authUser.userId, authHeader]);
+
+
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-[#384754] shadow-md mt-5 rounded-lg p-4">
@@ -87,14 +112,14 @@ const CreatePost = ({ setPosts }) => {
           <div className="mr-4">
             <img
               className="inline-block h-12 w-12 rounded-full"
-              src="https://ui-avatars.com/api/name=John+Doe"
+              src={profileImage}
               alt=""
             />
           </div>
           <div className="flex-1">
             {isPreviewMode ? (
               <div
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-pre rounded-lg"
+                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg "
                 dangerouslySetInnerHTML={{ __html: mdParser.render(content) }}
               />
             ) : (
@@ -126,7 +151,6 @@ const CreatePost = ({ setPosts }) => {
             </div>
           </div>
         )}
-        {/* buttons tray */}
         {/* buttons tray */}
         <div className="mt-4">
           <div className="flex flex-wrap items-center justify-between">
@@ -168,7 +192,7 @@ const CreatePost = ({ setPosts }) => {
 
             {/* Word count */}
             <span
-              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 sm:mb-0 sm:ml-4
+              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 md:mb-0 md:ml-4
         ${wordCount > wordCountLimit ? "bg-red-600" : ""}
       `}
             >
@@ -176,7 +200,7 @@ const CreatePost = ({ setPosts }) => {
             </span>
 
             {/* Post button */}
-            <div className="ml-auto">
+            <div className="ml-auto my-auto">
               <button
                 type="submit"
                 className="bg-blue-600 hover:bg-white hover:text-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center transition duration-300 cursor-pointer
