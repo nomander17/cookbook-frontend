@@ -29,7 +29,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
-  
+
   const { authUser } = useAuthUserContext();
 
   useEffect(() => {
@@ -121,7 +121,9 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
 
   const handleReply = () => {
     console.log("Reply button clicked for post ", postId);
-    navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
+    if (onClickEnabled) {
+      navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
+    }
   };
 
   const handleDelete = async () => {
@@ -246,15 +248,20 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
             ) : (
               <Heart className="mr-2" />
             )}
-            Like
+            {post.likes.length} {post.likes.length > 1 ? "Likes" : "Like"}
           </button>
-          <button
-            className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
-            onClick={handleReply}
-          >
-            <MessageSquareReply className="mr-2" />
-            Reply
-          </button>
+          {onClickEnabled ? (
+            <button
+              className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+              onClick={handleReply}
+            >
+              <MessageSquareReply className="mr-2" />
+              Reply
+            </button>
+          ) : (
+            <></>
+          )}
+
           {post.user.userId === authUser.userId && (
             <button
               className="flex items-center justify-center px-4 py-2 mr-4 md:mr-0 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"

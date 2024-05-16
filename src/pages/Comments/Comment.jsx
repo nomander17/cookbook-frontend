@@ -181,7 +181,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
             ) : (
               <Heart className="mr-2" />
             )}
-            Like
+            {comment.likes.length} {comment.likes.length === 1 ? "Like" : "Likes"}
           </button>
           {comment.user.userId === authUser.userId && (
             <button
