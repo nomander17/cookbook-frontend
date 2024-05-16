@@ -73,7 +73,7 @@ export const RegistrationForm = ({ setCurrentForm, notification, showNotificatio
         <Notification
           content={notification.content}
           category={notification.category}
-          hideNotification={hideNotification}
+          onClose={hideNotification}
         />
       )}
       <h2 className="font-bold text-2xl">Register</h2>

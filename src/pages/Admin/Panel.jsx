@@ -1,16 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import axios from "../../api/axios";
 import { EditModal } from "./EditModal";
 import { TableHead, TableData } from "./TableComponents";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import axios from "axios";
 
 export default function Panel({ currentTable }) {
   const [data, setData] = useState([]);
   const authHeader = useAuthHeader();
+  const api = axios.create({
+    baseURL: "http://localhost:8090/admin/api",
+  });
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await axios.get(`/admin/${currentTable}`, {
+      const response = await api.get(`${currentTable}`, {
         headers: {
           Authorization: authHeader,
         },
@@ -40,7 +43,7 @@ export default function Panel({ currentTable }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.delete(`/admin/${currentTable}/${id}`, {
+      const response = await api.delete(`/${currentTable}/${id}`, {
         headers: {
           Authorization: authHeader,
         },
@@ -54,8 +57,8 @@ export default function Panel({ currentTable }) {
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      const response = await axios.put(
-        `/admin/${currentTable}/${id}`,
+      const response = await api.put(
+        `/${currentTable}/${id}`,
         updatedData,
         {
           headers: {
