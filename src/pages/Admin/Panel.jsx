@@ -127,7 +127,7 @@ export default function Panel({ currentTable }) {
                       : JSON.stringify(value, null, 2).slice(0, 150);
                   } else if (typeof value === "string") {
                     value =
-                      value.slice(0, 150) + (value.length > 150 ? " ..." : "");
+                      value.slice(0, 100) + (value.length > 100 ? " ..." : "");
                   }
                   return <TableData key={i} text={value} />;
                 })}
