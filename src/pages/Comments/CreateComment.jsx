@@ -25,14 +25,35 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
     setSelectedImage(null);
   };
 
+  const convertImageToBase64 = (imageFile) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const commentDTO = {
-      userId: authUser.userId,
-      postId: postId,
-      text: content,
-    };
+    
     try {
+      let base64Image = null;
+      if (selectedImage) {
+        base64Image = await convertImageToBase64(selectedImage);
+      }
+
+      const commentDTO = {
+        userId: authUser.userId,
+        postId: postId,
+        text: content,
+        image: base64Image ? base64Image.split(",")[1] : null,
+      };
+
       await axios.post(`/posts/${postId}/comments`, commentDTO, {
         headers: {
           Authorization: authHeader,
@@ -45,6 +66,7 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
       });
       setComments(response.data);
       setContent("");
+      setSelectedImage(null);
     } catch (error) {
       console.error("Error posting comment", error);
     }
