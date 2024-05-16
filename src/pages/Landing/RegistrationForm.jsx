@@ -1,26 +1,23 @@
 import { useState } from "react";
-import request from "../../axiosHelper";
 import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
+import axios from "axios";
 
-export const RegistrationForm = ({
-  setCurrentForm,
-  notification,
-  setNotification,
-}) => {
+const BASE_URL = "http://localhost:8090/api";
+
+export const RegistrationForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     name: "",
     email: "",
     password: "",
   });
-
+  
   const [showPassword, setShowPassword] = useState(false);
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  
   const handlePasswordChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     const validatePassword = (e) => {
@@ -53,32 +50,21 @@ export const RegistrationForm = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await request.post("/auth/register", formData);
+      const response = await axios.post(`${BASE_URL}/auth/register`, formData);
       console.log(response);
       if (response.status === 200) {
         handleRegisterSuccess(response);
       } else if (response.status === 400) {
-        setNotification({
-          category: "error",
-          content: response.data,
-        });
+        
       }
     } catch (error) {
-      console.log(error);
-      setNotification({
-        category: "error",
-        content: error.response.data,
-      });
+      showNotification("error", error.response.data);
     }
   };
 
   const handleRegisterSuccess = (response) => {
-    localStorage.setItem("token", response.data.token);
     setCurrentForm("login");
-    setNotification({
-      category: "success",
-      content: "Registration successful. Please login.",
-    });
+    showNotification("success", "Registration successful. Please login.");
   };
 
   return (
@@ -87,6 +73,7 @@ export const RegistrationForm = ({
         <Notification
           content={notification.content}
           category={notification.category}
+          onClose={hideNotification}
         />
       )}
       <h2 className="font-bold text-2xl">Register</h2>
@@ -95,9 +82,9 @@ export const RegistrationForm = ({
         <input
           className="p-2 mt-8 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 text-stone-700"
           type="text"
-          name="username"
+          name="userName"
           placeholder="Username"
-          value={formData.username}
+          value={formData.userName}
           onChange={(e) =>
             setFormData({ ...formData, [e.target.name]: e.target.value })
           }
@@ -120,9 +107,7 @@ export const RegistrationForm = ({
           name="email"
           placeholder="Email"
           value={formData.email}
-          onChange={(e) =>
-            handleEmailChange(e)
-          }
+          onChange={(e) => handleEmailChange(e)}
           required
         />
         <div className="relative">
@@ -132,9 +117,7 @@ export const RegistrationForm = ({
             name="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) =>
-              handlePasswordChange(e)
-            }
+            onChange={(e) => handlePasswordChange(e)}
             required
           />
           <button
@@ -160,7 +143,7 @@ export const RegistrationForm = ({
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("login");
-            setNotification({});
+            showNotification()
           }}
         >
           Login

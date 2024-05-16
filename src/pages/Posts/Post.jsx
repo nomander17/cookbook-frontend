@@ -1,22 +1,12 @@
 import { Heart, MessageSquareReply, Trash } from "lucide-react";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import { useEffect } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
-
-// Current userId is the user currently logged in
-// import jwt_decode from "jwt-decode";
-
-// const token = localStorage.getItem('token');
-// const currentUser = token ? jwt_decode(token) : null;
-
-// for now it is 1
-const currentUser = {
-  userId: 2,
-  username: "Admin",
-};
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { useAuthUserContext } from "./../../context/AuthUserContext";
 
 const mdParser = new MarkdownIt();
 
@@ -27,18 +17,32 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
       username: "",
       avatar: "NO ICON",
     },
+    likes: [
+      {
+        user: {
+          userId: 0,
+        },
+      },
+    ],
   });
 
   const [liked, setLiked] = useState(false);
-
   const navigate = useNavigate();
+  const authHeader = useAuthHeader();
+
+  const { authUser } = useAuthUserContext();
 
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const response = await request.get(`/posts/${postId}`);
+        const response = await axios.get(`/posts/${postId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         setPost(response.data);
         setLiked(alreadyLiked(response.data.likes));
+        console.log("Fetching post ", postId);
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
       }
@@ -48,7 +52,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   }, [postId]);
 
   const alreadyLiked = (likes) => {
-    return likes.some((like) => like.user.userId === currentUser.userId);
+    return likes.some((like) => like.user.userId === authUser.userId);
   };
 
   const handleLike = async () => {
@@ -56,16 +60,20 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     if (liked) {
       // Unliking post
       const likeId = post.likes.find(
-        (like) => like.user.userId === currentUser.userId
+        (like) => like.user.userId === authUser.userId
       )?.likeId;
       try {
-        await request.delete(`/posts/${post.postId}/likes/${likeId}`);
+        await axios.delete(`/posts/${post.postId}/likes/${likeId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         setLiked(false);
         // Update post likes by filtering out the current user's like
         setPost({
           ...post,
           likes: post.likes.filter(
-            (like) => like.user.userId !== currentUser.userId
+            (like) => like.user.userId !== authUser.userId
           ),
         });
       } catch (error) {
@@ -74,10 +82,18 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     } else {
       // Liking post
       try {
-        const response = await request.post(`/posts/${post.postId}/likes`, {
-          userId: currentUser.userId,
-          postId: post.postId,
-        });
+        const response = await axios.post(
+          `/posts/${post.postId}/likes`,
+          {
+            userId: authUser.userId,
+            postId: post.postId,
+          },
+          {
+            headers: {
+              Authorization: authHeader,
+            },
+          }
+        );
         setLiked(true);
         // Update post likes by adding the new like
         setPost({
@@ -105,13 +121,19 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
 
   const handleReply = () => {
     console.log("Reply button clicked for post ", postId);
-    navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
+    if (onClickEnabled) {
+      navigate(`/posts/${postId}`, { state: { post, replyInFocus: true } });
+    }
   };
 
   const handleDelete = async () => {
     console.log("Delete button clicked for post ", postId);
     try {
-      const response = await request.delete(`/posts/${postId}`);
+      const response = await axios.delete(`/posts/${postId}`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       console.log(response);
       onDelete();
     } catch (error) {
@@ -212,7 +234,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
           </div>
         )}
         {/* Interactions */}
-        <div className="flex justify-start items-center mt-4">
+        <div className="flex justify-start items-center mt-4 resize-x">
           <button
             className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
             onClick={handleLike}
@@ -226,18 +248,23 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
             ) : (
               <Heart className="mr-2" />
             )}
-            Like
+            {post.likes.length} {post.likes.length > 1 ? "Likes" : "Like"}
           </button>
-          <button
-            className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
-            onClick={handleReply}
-          >
-            <MessageSquareReply className="mr-2" />
-            Reply
-          </button>
-          {post.user.userId === currentUser.userId && (
+          {onClickEnabled ? (
             <button
-              className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+              className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
+              onClick={handleReply}
+            >
+              <MessageSquareReply className="mr-2" />
+              Reply
+            </button>
+          ) : (
+            <></>
+          )}
+
+          {post.user.userId === authUser.userId && (
+            <button
+              className="flex items-center justify-center px-4 py-2 mr-4 md:mr-0 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
               onClick={handleDelete}
             >
               <Trash className="mr-2" />

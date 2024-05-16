@@ -1,12 +1,13 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import Post from "./Post";
 import { useState, useEffect } from "react";
-import request from "../../axiosHelper";
+import axios from "../../api/axios";
 import HomeSideBar from "../Home/HomeSideBar";
 import Comment from "../Comments/Comment";
 import CreateComment from "../Comments/CreateComment";
 import NoContent from "../../components/NoContent";
 import BottomNavBar from "../../components/BottomNavBar";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 export default function PostPage() {
   const { postId } = useParams();
@@ -14,15 +15,20 @@ export default function PostPage() {
   const [post, setPost] = useState(location.state?.post || null);
   const replyInFocus = location.state?.replyInFocus || false;
   const [comments, setComments] = useState([]);
-  const navigate = useNavigate();
-
   const [newPostCreated, setNewPostCreated] = useState(false);
+  const navigate = useNavigate();
+  const authHeader = useAuthHeader();
+  
 
   useEffect(() => {
     if (!post) {
       const fetchPost = async () => {
         try {
-          const response = await request.get(`/posts/${postId}`);
+          const response = await axios.get(`/posts/${postId}`, {
+            headers: {
+              Authorization: authHeader,
+            },
+          });
           setPost(response.data);
         } catch (error) {
           console.error(`Error fetching post ${postId}: `, error);
@@ -36,7 +42,11 @@ export default function PostPage() {
     const fetchComments = async () => {
       try {
         console.log("Fetching comments");
-        const response = await request.get(`/posts/${postId}/comments`);
+        const response = await axios.get(`/posts/${postId}/comments`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
         console.log(`/posts/${postId}/comments`);
         console.log(response.data);
         setComments(response.data);

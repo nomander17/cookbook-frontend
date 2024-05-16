@@ -1,19 +1,24 @@
 import { useState } from "react";
-import request from "../../axiosHelper";
 import Notification from "../../components/Notifications";
 import { Eye, EyeOff } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
+import { useAuthUserContext } from "../../context/AuthUserContext";
 
-export const LoginForm = ({
-  setCurrentForm,
-  notification,
-  setNotification,
-}) => {
+const BASE_URL = "http://localhost:8090/api";
+
+export const LoginForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
   const [formData, setFormData] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
+  const signIn = useSignIn();
+
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
+  const { setAuthUser } = useAuthUserContext();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -34,32 +39,36 @@ export const LoginForm = ({
     validatePassword(e);
   };
 
-  const handleEmailChange = (e) => {
+  const handleUsernameChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    const validateEmail = (e) => {
-      const email = e.target.value;
-      const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
-      if (!emailRegex.test(email)) {
-        e.target.setCustomValidity("Please enter a valid email address.");
-      } else {
-        e.target.setCustomValidity("");
-      }
-    };
-    validateEmail(e);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
-    await request
-      .post("/auth/login", formData)
-      .then((response) => {
-        console.log(response.data);
-      })
-      .catch((error) => {
-        console.log(error);
+    try {
+      const response = await axios.post(`${BASE_URL}/auth/login`, formData);
+      // console.log(response.data);
+      signIn({
+        auth: {
+          token: response.data.jwtToken,
+          tokenType: "Bearer",
+        },
       });
+      setAuthUser({
+        username: response.data.username,
+        userId: response.data.userId,
+      });
+      navigate("/home");
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        console.log(error.response.status);
+        showNotification("error", "Invalid username or password.");
+      } else {
+        console.log(error);
+      }
+    }
   };
 
   return (
@@ -68,6 +77,7 @@ export const LoginForm = ({
         <Notification
           content={notification.content}
           category={notification.category}
+          onClose={hideNotification}
         />
       )}
       <h2 className="font-bold text-2xl">Login</h2>
@@ -75,13 +85,11 @@ export const LoginForm = ({
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <input
           className="p-2 mt-8 text-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 invalid:focus:ring-red-600"
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => 
-            handleEmailChange(e)
-          }
+          type="username"
+          name="username"
+          placeholder="Username"
+          value={formData.username}
+          onChange={(e) => handleUsernameChange(e)}
           required
         />
         <div className="relative">
@@ -91,9 +99,7 @@ export const LoginForm = ({
             name="password"
             placeholder="Password"
             value={formData.password}
-            onChange={(e) => 
-              handlePasswordChange(e)
-            }
+            onChange={(e) => handlePasswordChange(e)}
             required
           />
           <button
@@ -121,7 +127,7 @@ export const LoginForm = ({
         className="border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300"
         onClick={() => {
           setCurrentForm("register");
-          setNotification({});
+          showNotification();
         }}
       >
         Register
@@ -133,7 +139,7 @@ export const LoginForm = ({
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("forgotPassword");
-            setNotification({});
+            showNotification();
           }}
         >
           Reset Password

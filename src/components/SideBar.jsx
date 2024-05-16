@@ -1,14 +1,48 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import Logo from "./../assets/logo-no-background.png";
 import { ExpandIcon, LogOut, Minimize2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
+import useSignOut from "react-auth-kit/hooks/useSignOut";
+import { useAuthUserContext } from "../context/AuthUserContext";
+import axios from "../api/axios";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 const SideBarContext = createContext();
 
 export function SideBar({ children }) {
   const [expanded, setExpanded] = useState(true);
-
+  const signOut = useSignOut();
+  const { authUser, setAuthUser } = useAuthUserContext();
   const navigate = useNavigate();
+  const [profileImage, setProfileImage] = useState("");
+  const [user, setUser] = useState({});
+  const authHeader = useAuthHeader();
+
+  useEffect(() => {
+    const fetchProfileImage = async () => {
+      try {
+        const response = await axios.get(`/users/${authUser.userId}`, {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
+        const fetchedUser = response.data;
+        setUser(fetchedUser);
+        if (fetchedUser.avatar === null) {
+          const nameParams = fetchedUser.name.split(" ").join("+");
+          setProfileImage(
+            `https://ui-avatars.com/api/?name=${nameParams}&background=random`
+          );
+        } else {
+          setProfileImage(`data:image/jpeg;base64,${fetchedUser.avatar}`);
+        }
+      } catch (error) {
+        console.error("Error fetching user", error);
+      }
+    };
+  
+    fetchProfileImage();
+  }, [authUser.userId, authHeader]);
+  
 
   return (
     <aside className={`h-screen z-10 transform relative`}>
@@ -42,7 +76,7 @@ export function SideBar({ children }) {
 
         <div className="border-t border-gray-600 flex p-3">
           <img
-            src="https://ui-avatars.com/api/name=John+Doe?background=0D8ABC&color=fff"
+            src={profileImage}
             alt="User avatar"
             className="w-12 h-12 rounded-md"
           />
@@ -53,10 +87,19 @@ export function SideBar({ children }) {
             `}
           >
             <div className="leading-4 text-white">
-              <h4 className="font-semibold text-sm text-white">John Doe</h4>
-              <span className="text-sm text-gray-600">@username</span>
+              <h4 className="font-semibold text-sm text-white">{user.name}</h4>
+              <span className="text-sm text-gray-600">@{user.username}</span>
             </div>
-            <LogOut color="white" />
+            <div className="hover:cursor-pointer">
+              <LogOut
+                color="white"
+                onClick={() => {
+                  signOut();
+                  setAuthUser(null);
+                  navigate("/");
+                }}
+              />
+            </div>
           </div>
         </div>
       </nav>
@@ -66,7 +109,7 @@ export function SideBar({ children }) {
 
 export function SideBarItem({ icon, text, active, onClick }) {
   const { expanded } = useContext(SideBarContext);
-  
+
   return (
     <li
       className={`

@@ -1,14 +1,23 @@
 import { useCallback, useEffect, useState } from "react";
-import request from "../../axiosHelper";
 import { EditModal } from "./EditModal";
 import { TableHead, TableData } from "./TableComponents";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import axios from "axios";
 
 export default function Panel({ currentTable }) {
   const [data, setData] = useState([]);
+  const authHeader = useAuthHeader();
+  const api = axios.create({
+    baseURL: "http://localhost:8090/admin/api",
+  });
 
   const fetchData = useCallback(async () => {
     try {
-      const response = await request.get(`/admin/${currentTable}`);
+      const response = await api.get(`${currentTable}`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       setData(response.data);
       console.log(response.data);
     } catch (error) {
@@ -34,7 +43,11 @@ export default function Panel({ currentTable }) {
 
   const handleDelete = async (id) => {
     try {
-      const response = await request.delete(`/admin/${currentTable}/${id}`);
+      const response = await api.delete(`/${currentTable}/${id}`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       console.log(response);
     } catch (error) {
       console.error(`Error deleting data: ${error}`);
@@ -44,9 +57,14 @@ export default function Panel({ currentTable }) {
 
   const handleUpdate = async (id, updatedData) => {
     try {
-      const response = await request.put(
-        `/admin/${currentTable}/${id}`,
-        updatedData
+      const response = await api.put(
+        `/${currentTable}/${id}`,
+        updatedData,
+        {
+          headers: {
+            Authorization: authHeader,
+          },
+        }
       );
       console.log(response);
     } catch (error) {
@@ -79,12 +97,12 @@ export default function Panel({ currentTable }) {
               <tr key={index}>
                 {Object.entries(item).map(([key, value], i) => {
                   if (key === "image" || key === "avatar") {
-                    if(value == null) {
+                    if (value == null) {
                       return (
                         <TableData key={i}>
                           <p>[No image]</p>
                         </TableData>
-                      )
+                      );
                     } else {
                       return (
                         <TableData key={i}>
@@ -98,7 +116,7 @@ export default function Panel({ currentTable }) {
                       );
                     }
                   }
-                  if(Array.isArray(value)) {
+                  if (Array.isArray(value)) {
                     value = value.length;
                   } else if (value && typeof value === "object") {
                     const idKey = Object.keys(value).find((k) =>
@@ -108,7 +126,8 @@ export default function Panel({ currentTable }) {
                       ? value[idKey]
                       : JSON.stringify(value, null, 2).slice(0, 150);
                   } else if (typeof value === "string") {
-                    value = value.slice(0, 150) + (value.length > 150 ? " ..." : "");
+                    value =
+                      value.slice(0, 150) + (value.length > 150 ? " ..." : "");
                   }
                   return <TableData key={i} text={value} />;
                 })}

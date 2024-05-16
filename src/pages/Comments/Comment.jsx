@@ -1,20 +1,9 @@
 import { Heart, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { absoluteTime, relativeTime } from "../Home/timeFormat";
-import request from "../../axiosHelper";
-
-// Current userId is the user currently logged in
-// import jwt_decode from "jwt-decode";
-
-// const token = localStorage.getItem('token');
-// const currentUser = token ? jwt_decode(token) : null;
-
-// for now it is 1
-const currentUser = {
-    userId: 2,
-    username: "Admin",
-  };
-  
+import axios from "../../api/axios";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { useAuthUserContext } from "../../context/AuthUserContext";
 
 const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   const [comment, setComment] = useState({
@@ -25,15 +14,24 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     },
     likes: [],
     text: "",
-    time: ""
+    time: "",
   });
 
   const [liked, setLiked] = useState(false);
+  const authHeader = useAuthHeader();
+  const { authUser } = useAuthUserContext();
 
   useEffect(() => {
     const fetchComments = async () => {
       try {
-        const response = await request.get(`/posts/${postId}/comments/${commentId}`);
+        const response = await axios.get(
+          `/posts/${postId}/comments/${commentId}`,
+          {
+            headers: {
+              Authorization: authHeader,
+            },
+          }
+        );
         setComment(response.data);
         setLiked(alreadyLiked(response.data.likes));
       } catch (error) {
@@ -45,7 +43,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   }, [commentId, postId]);
 
   const alreadyLiked = (likes) => {
-    return likes.some((like) => like.user.userId === currentUser.userId);
+    return likes.some((like) => like.user.userId === authUser.userId);
   };
 
   const getProfileImage = () => {
@@ -62,16 +60,23 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     if (liked) {
       // Unliking comment
       const likeId = comment.likes.find(
-        (like) => like.user.userId === currentUser.userId
+        (like) => like.user.userId === authUser.userId
       )?.likeId;
       try {
-        await request.delete(`/posts/${postId}/comments/${comment.commentId}/likes/${likeId}`);
+        await axios.delete(
+          `/posts/${postId}/comments/${comment.commentId}/likes/${likeId}`,
+          {
+            headers: {
+              Authorization: authHeader,
+            },
+          }
+        );
         setLiked(false);
         // Update comment likes by filtering out the current user's like
         setComment({
           ...comment,
           likes: comment.likes.filter(
-            (like) => like.user.userId !== currentUser.userId
+            (like) => like.user.userId !== authUser.userId
           ),
         });
       } catch (error) {
@@ -80,10 +85,18 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     } else {
       // Liking comment
       try {
-        const response = await request.post(`/posts/${postId}/comments/${comment.commentId}/likes`, {
-          userId: currentUser.userId,
-          commentId: comment.commentId,
-        });
+        const response = await axios.post(
+          `/posts/${postId}/comments/${comment.commentId}/likes`,
+          {
+            userId: authUser.userId,
+            commentId: comment.commentId,
+          },
+          {
+            headers: {
+              Authorization: authHeader,
+            },
+          }
+        );
         setLiked(true);
         // Update comment likes by adding the new like
         setComment({
@@ -103,13 +116,20 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
   const handleDelete = async () => {
     console.log("delete pressed");
     try {
-      const response = await request.delete(`/posts/${postId}/comments/${commentId}`);
+      const response = await axios.delete(
+        `/posts/${postId}/comments/${commentId}`,
+        {
+          headers: {
+            Authorization: authHeader,
+          },
+        }
+      );
       console.log(response);
       onDelete();
     } catch (error) {
       console.error(`Error deleting post ${postId}`, error);
     }
-  }
+  };
 
   return (
     <div className="bg-[#384754] shadow-md rounded-lg p-4 mb-4">
@@ -161,9 +181,9 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
             ) : (
               <Heart className="mr-2" />
             )}
-            Like
+            {comment.likes.length} {comment.likes.length === 1 ? "Like" : "Likes"}
           </button>
-          {comment.user.userId === currentUser.userId && (
+          {comment.user.userId === authUser.userId && (
             <button
               className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
               onClick={handleDelete}
