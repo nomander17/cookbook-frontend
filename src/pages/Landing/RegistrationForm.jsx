@@ -5,23 +5,19 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8090/api";
 
-export const RegistrationForm = ({
-  setCurrentForm,
-  notification,
-  setNotification,
-}) => {
+export const RegistrationForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
   const [formData, setFormData] = useState({
     userName: "",
     name: "",
     email: "",
     password: "",
   });
-
+  
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  
   const handlePasswordChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     const validatePassword = (e) => {
@@ -59,27 +55,16 @@ export const RegistrationForm = ({
       if (response.status === 200) {
         handleRegisterSuccess(response);
       } else if (response.status === 400) {
-        setNotification({
-          category: "error",
-          content: response.data,
-        });
+        
       }
     } catch (error) {
-      console.log(error);
-      setNotification({
-        category: "error",
-        content: error.response.data,
-      });
+      showNotification("error", error.response.data);
     }
   };
 
   const handleRegisterSuccess = (response) => {
-    localStorage.setItem("token", response.data.token);
     setCurrentForm("login");
-    setNotification({
-      category: "success",
-      content: "Registration successful. Please login.",
-    });
+    showNotification("success", "Registration successful. Please login.");
   };
 
   return (
@@ -88,6 +73,7 @@ export const RegistrationForm = ({
         <Notification
           content={notification.content}
           category={notification.category}
+          hideNotification={hideNotification}
         />
       )}
       <h2 className="font-bold text-2xl">Register</h2>
@@ -157,7 +143,7 @@ export const RegistrationForm = ({
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("login");
-            setNotification({});
+            showNotification()
           }}
         >
           Login

@@ -4,23 +4,17 @@ import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 
 const BASE_URL = "http://localhost:8090/api";
 
-export const LoginForm = ({
-  setCurrentForm,
-  notification,
-  setNotification,
-}) => {
+export const LoginForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
   const signIn = useSignIn();
-  const { authUser } = useAuthUserContext();
 
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
@@ -55,27 +49,25 @@ export const LoginForm = ({
     console.log("Form Data:", formData);
     try {
       const response = await axios.post(`${BASE_URL}/auth/login`, formData);
-      console.log(response.data);
+      // console.log(response.data);
       signIn({
         auth: {
           token: response.data.jwtToken,
           tokenType: "Bearer",
-        },
-        userState: {
-          user: {
-            username: response.data.username,
-            userId: response.data.userId,
-          },
         },
       });
       setAuthUser({
         username: response.data.username,
         userId: response.data.userId,
       });
-      console.log("From home: ", authUser);
       navigate("/home");
     } catch (error) {
-      console.log(error);
+      if (error.response && error.response.status === 401) {
+        console.log(error.response.status);
+        showNotification("error", "Invalid username or password.");
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -85,6 +77,7 @@ export const LoginForm = ({
         <Notification
           content={notification.content}
           category={notification.category}
+          onClose={hideNotification}
         />
       )}
       <h2 className="font-bold text-2xl">Login</h2>
@@ -134,7 +127,7 @@ export const LoginForm = ({
         className="border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300"
         onClick={() => {
           setCurrentForm("register");
-          setNotification({});
+          showNotification();
         }}
       >
         Register
@@ -146,7 +139,7 @@ export const LoginForm = ({
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("forgotPassword");
-            setNotification({});
+            showNotification();
           }}
         >
           Reset Password

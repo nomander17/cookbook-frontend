@@ -1,7 +1,12 @@
 import { useState } from "react";
 import Notification from "../../components/Notifications";
 
-export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotification }) => {
+export const ForgotPasswordForm = ({
+  setCurrentForm,
+  notification,
+  showNotification,
+  hideNotification,
+}) => {
   const [formData, setFormData] = useState({
     email: "",
   });
@@ -29,8 +34,12 @@ export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotificati
 
   return (
     <div className="md:w-1/2 px-8 md:px-16 text-offwhite">
-      { notification && (
-        <Notification content={notification.content} category={notification.category} />
+      {notification && (
+        <Notification
+          content={notification.content}
+          category={notification.category}
+          onClose={hideNotification}
+        />
       )}
       <h2 className="font-bold text-2xl">Forgot Password</h2>
       <p className="text-xs mt-4">Enter your email to reset your password</p>
@@ -42,7 +51,8 @@ export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotificati
           placeholder="Email"
           value={formData.email}
           onChange={(e) => handleEmailChange(e)}
-          required />
+          required
+        />
         <button
           type="submit"
           className="bg-accent rounded-xl text-zinc-50 py-2 hover:scale-105 duration-300"
@@ -57,7 +67,7 @@ export const ForgotPasswordForm = ({ setCurrentForm, notification, setNotificati
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("login");
-            setNotification({});
+            showNotification();
           }}
         >
           Login
