@@ -31,10 +31,22 @@ function App() {
                   </RequireAuth>
                 }
               />
-              {/* <Route path="/home" element={<Home />}></Route> */}
-              {/* Secure these two later */}
-              <Route path="/posts/:postId" element={<PostPage />}></Route>
-              <Route path="/admin" element={<Admin />}></Route>
+              <Route
+                path="/posts/:postId"
+                element={
+                  <RequireAuth fallbackPath={"/"}>
+                    <PostPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/admin"
+                element={
+                  <RequireAuth fallbackPath={"/"}>
+                    <Admin />
+                  </RequireAuth>
+                }
+              />
             </Routes>
           </BrowserRouter>
         </AuthUserProvider>
