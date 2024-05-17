@@ -120,7 +120,7 @@ const CreatePost = ({ setPosts }) => {
           <div className="flex-1">
             {isPreviewMode ? (
               <div
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg "
+                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg markdown-class"
                 dangerouslySetInnerHTML={{ __html: mdParser.render(content) }}
               />
             ) : (

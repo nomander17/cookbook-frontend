@@ -49,6 +49,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     };
 
     fetchPost();
+    // eslint-disable-next-line
   }, [postId]);
 
   const alreadyLiked = (likes) => {
@@ -202,6 +203,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
           {truncate ? (
             <>
               <div
+                className="markdown-body"
                 dangerouslySetInnerHTML={{
                   __html: renderMarkdown(truncatePost(post.text).truncatedText),
                 }}
@@ -217,6 +219,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
             </>
           ) : (
             <div
+              className="markdown-body"
               dangerouslySetInnerHTML={{
                 __html: renderMarkdown(post.text),
               }}
