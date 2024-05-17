@@ -1,4 +1,10 @@
-import { MessageSquareMore, NotebookText, ThumbsUp, User } from "lucide-react";
+import {
+  Home,
+  MessageSquareMore,
+  NotebookText,
+  ThumbsUp,
+  User,
+} from "lucide-react";
 import Panel from "./Panel";
 import { useEffect, useState } from "react";
 import { SideBar, SideBarItem } from "./../../components/SideBar";
@@ -18,7 +24,7 @@ const Admin = () => {
             Authorization: authHeader,
           },
         });
-        if(response.data === false) {
+        if (response.data === false) {
           navigate("/home");
         }
       } catch (error) {
@@ -64,6 +70,14 @@ const Admin = () => {
           active={currentTable === "likes"}
           onClick={() => {
             setCurrentTable("likes");
+          }}
+        />
+        <SideBarItem
+          icon={<Home />}
+          text="Home"
+          active={false}
+          onClick={() => {
+            navigate("/home");
           }}
         />
       </SideBar>
