@@ -8,7 +8,12 @@ import { useAuthUserContext } from "../../context/AuthUserContext";
 
 const BASE_URL = "http://localhost:8090/api";
 
-export const LoginForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
+export const LoginForm = ({
+  setCurrentForm,
+  notification,
+  showNotification,
+  hideNotification,
+}) => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -26,17 +31,6 @@ export const LoginForm = ({ setCurrentForm, notification, showNotification, hide
 
   const handlePasswordChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-    const validatePassword = (e) => {
-      const password = e.target.value;
-      if (password.length < 8) {
-        e.target.setCustomValidity(
-          "Password must be at least 8 characters long."
-        );
-      } else {
-        e.target.setCustomValidity("");
-      }
-    };
-    validatePassword(e);
   };
 
   const handleUsernameChange = (e) => {
@@ -49,10 +43,10 @@ export const LoginForm = ({ setCurrentForm, notification, showNotification, hide
     console.log("Form Data:", formData);
     try {
       const response = await axios.post(`${BASE_URL}/auth/login`, formData);
-      // console.log(response.data);
+      const jwtToken = response.data.jwtToken;
       signIn({
         auth: {
-          token: response.data.jwtToken,
+          token: jwtToken,
           tokenType: "Bearer",
         },
       });
