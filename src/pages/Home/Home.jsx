@@ -1,7 +1,6 @@
 import { Feed } from "./Feed";
 import HomeSideBar from "./HomeSideBar";
 import BottomNavBar from "../../components/BottomNavBar";
-import useAuthUser from "react-auth-kit/hooks/useAuthUser";
 import { useEffect, useState } from "react";
 
 const Home = () => {

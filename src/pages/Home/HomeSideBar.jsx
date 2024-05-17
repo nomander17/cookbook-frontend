@@ -1,10 +1,30 @@
 import { useNavigate } from "react-router-dom";
 import { SideBar, SideBarItem } from "../../components/SideBar";
 import { Bell, HomeIcon, Shield, SquarePen, User } from "lucide-react";
+import { useEffect, useState } from "react";
+import axios from "../../api/axios";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
 function HomeSideBar() {
   const navigate = useNavigate();
+  const authHeader = useAuthHeader();
+  const [isAdmin, setIsAdmin] = useState(false);
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      try {
+        const response = await axios.get("/auth/is-admin", {
+          headers: {
+            Authorization: authHeader,
+          },
+        });
+        setIsAdmin(response.data);
+      } catch (error) {
+        console.error("Error checking admin status:", error);
+      }
+    };
 
+    checkIsAdmin();
+  }, [authHeader]);
   return (
     <SideBar>
       {/* SideBarItem({user, text, active}) */}
@@ -40,14 +60,16 @@ function HomeSideBar() {
           navigate("/post");
         }}
       />
-      <SideBarItem
-        icon={<Shield />}
-        text="Admin"
-        active={false}
-        onClick={() => {
-          navigate("/admin");
-        }}
-      />
+      {isAdmin && (
+        <SideBarItem
+          icon={<Shield />}
+          text="Admin"
+          active={false}
+          onClick={() => {
+            navigate("/admin");
+          }}
+        />
+      )}
     </SideBar>
   );
 }
