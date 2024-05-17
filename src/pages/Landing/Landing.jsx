@@ -8,6 +8,8 @@ import { LoginForm } from "./LoginForm";
 import { RegistrationForm } from "./RegistrationForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import useNotification from "../../hooks/useNotification";
+import { VerifyOtp } from "./VerifyOtp";
+import { ResetPassword } from "./ResetPassword";
 
 const Landing = () => {
   const [currentForm, setCurrentForm] = useState("login");
@@ -15,6 +17,8 @@ const Landing = () => {
     useNotification();
   const [currentImage, setCurrentImage] = useState(LandingImage1);
   const [isImageActive, setIsImageActive] = useState(true);
+  const [otpAuth, setOtpAuth] = useState("");
+  const [resetPasswordAuth, setResetPasswordAuth] = useState("");
 
   useEffect(() => {
     const imageCycle = [
@@ -62,6 +66,28 @@ const Landing = () => {
             notification={notification}
             showNotification={showNotification}
             hideNotification={hideNotification}
+            setOtpAuth={setOtpAuth}
+          />
+        );
+      case "verifyOtp":
+        return (
+          <VerifyOtp
+            setCurrentForm={setCurrentForm}
+            notification={notification}
+            showNotification={showNotification}
+            hideNotification={hideNotification}
+            otpAuth={otpAuth}
+            setResetPasswordAuth={setResetPasswordAuth}
+          />
+        );
+      case "resetPassword":
+        return (
+          <ResetPassword
+            setCurrentForm={setCurrentForm}
+            notification={notification}
+            showNotification={showNotification}
+            hideNotification={hideNotification}
+            resetPasswordAuth={resetPasswordAuth}
           />
         );
       default:
