@@ -54,7 +54,18 @@ export const LoginForm = ({
         username: response.data.username,
         userId: response.data.userId,
       });
-      navigate("/home");
+      const isAdmin = async() => {
+        return await axios.get(`${BASE_URL}/auth/is-admin`, {
+          headers: {
+            Authorization: `Bearer ${jwtToken}`
+          }
+        });
+      }
+      if (isAdmin) {
+        navigate("/admin");
+      } else {
+        navigate("/home");
+      }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         console.log(error.response.status);
