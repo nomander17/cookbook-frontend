@@ -96,17 +96,39 @@ export default function ProfileComponent() {
     }
   };
 
+  const convertImageToBase64 = (imageFile) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+      reader.onerror = (error) => {
+        reject(error);
+      };
+      reader.readAsDataURL(imageFile);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`/users/${user.userId}/profile`, editingUser, {
+      let base64Image;
+      if (selectedImage) {
+        base64Image = await convertImageToBase64(selectedImage);
+      }
+      const updatedUser = {
+        ...editingUser,
+        avatar: base64Image ? base64Image.split(",")[1] : null,
+      };
+      await axios.put(`/users/${user.userId}/profile`, updatedUser, {
         headers: {
           Authorization: authHeader,
         },
       });
+      setUser(updatedUser);
       setIsEditing(false);
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -183,6 +205,14 @@ export default function ProfileComponent() {
                 placeholder="Email"
               />
               <div className="flex justify-end">
+                {selectedImage && (
+                  <button
+                    className="bg-blue-500 text-white mr-4 px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                    onClick={handleRemoveImage}
+                  >
+                    Clear Image
+                  </button>
+                )}
                 <button
                   type="submit"
                   className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
