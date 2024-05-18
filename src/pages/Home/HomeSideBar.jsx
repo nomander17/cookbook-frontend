@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
-function HomeSideBar() {
+function HomeSideBar({active}) {
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -31,7 +31,7 @@ function HomeSideBar() {
       <SideBarItem
         icon={<HomeIcon />}
         text={"Home"}
-        active={true}
+        active={active === "home"}
         onClick={() => {
           navigate("/home");
         }}
@@ -39,7 +39,7 @@ function HomeSideBar() {
       <SideBarItem
         icon={<User />}
         text="Profile"
-        active={false}
+        active={active === "profile"}
         onClick={() => {
           navigate("/profile");
         }}
@@ -47,7 +47,7 @@ function HomeSideBar() {
       <SideBarItem
         icon={<Bell />}
         text={"Notifications"}
-        active={false}
+        active={active === "notifications"}
         onClick={() => {
           navigate("/notifications");
         }}
@@ -55,7 +55,7 @@ function HomeSideBar() {
       <SideBarItem
         icon={<SquarePen />}
         text={"Post"}
-        active={false}
+        active={active === "post"}
         onClick={() => {
           navigate("/post");
         }}
@@ -64,7 +64,7 @@ function HomeSideBar() {
         <SideBarItem
           icon={<Shield />}
           text="Admin"
-          active={false}
+          active={active === "admin"}
           onClick={() => {
             navigate("/admin");
           }}

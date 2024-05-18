@@ -167,7 +167,8 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
           </div>
         )}
         {/* Interactions */}
-        <div className="flex justify-start items-center mt-4">
+        {/* buttons tray */}
+        <div className="flex justify-start items-center mt-4 text-xs md:text-sm">
           <button
             className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
             onClick={handleLike}

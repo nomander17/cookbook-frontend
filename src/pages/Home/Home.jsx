@@ -23,7 +23,7 @@ const Home = () => {
     <div className="flex flex-col md:flex-row max-w-screen max-h-screen">
       {isSideBarVisible ? (
         <div className="block">
-          <HomeSideBar />
+          <HomeSideBar active={"home"} />
         </div>
       ) : (
         <></>
@@ -37,7 +37,7 @@ const Home = () => {
       {/* bottom navbar for small screens */}
       {!isSideBarVisible ? (
         <div className="fixed inset-x-0 bottom-0">
-          <BottomNavBar />
+          <BottomNavBar active={"home"} />
         </div>
       ) : (
         <></>

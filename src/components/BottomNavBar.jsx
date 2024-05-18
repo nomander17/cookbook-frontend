@@ -1,13 +1,10 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Home, User, Settings } from "lucide-react";
 
-export default function BottomNavBar() {
-  const [activeItem, setActiveItem] = useState("home");
+export default function BottomNavBar({ active }) {
   const navigate = useNavigate();
 
-  const handleItemClick = (item, route) => {
-    setActiveItem(item);
+  const handleItemClick = (route) => {
     navigate(route);
   };
 
@@ -18,9 +15,9 @@ export default function BottomNavBar() {
           className={`
             flex flex-col items-center justify-center
             px-4 py-2 cursor-pointer transition-colors
-            ${activeItem === "home" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
+            ${active === "home" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
           `}
-          onClick={() => handleItemClick("home", "/home")}
+          onClick={() => handleItemClick("/home")}
         >
           <Home />
           <span className="text-xs mt-1">Home</span>
@@ -29,9 +26,9 @@ export default function BottomNavBar() {
           className={`
             flex flex-col items-center justify-center
             px-4 py-2 cursor-pointer transition-colors
-            ${activeItem === "profile" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
+            ${active === "profile" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
           `}
-          onClick={() => handleItemClick("profile", "/profile")}
+          onClick={() => handleItemClick("/profile")}
         >
           <User />
           <span className="text-xs mt-1">Profile</span>
@@ -40,9 +37,9 @@ export default function BottomNavBar() {
           className={`
             flex flex-col items-center justify-center
             px-4 py-2 cursor-pointer transition-colors
-            ${activeItem === "settings" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
+            ${active === "settings" ? "text-blue-500" : "text-gray-500 hover:text-blue-500"}
           `}
-          onClick={() => handleItemClick("settings", "/settings")}
+          onClick={() => handleItemClick("/settings")}
         >
           <Settings />
           <span className="text-xs mt-1">Settings</span>

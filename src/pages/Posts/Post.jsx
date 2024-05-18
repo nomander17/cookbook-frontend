@@ -237,7 +237,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
           </div>
         )}
         {/* Interactions */}
-        <div className="flex justify-start items-center mt-4 resize-x">
+        <div className="flex justify-start items-center mt-4 resize-x text-xs md:text-sm">
           <button
             className="flex mr-5 items-center justify-center px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out"
             onClick={handleLike}
@@ -267,7 +267,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
 
           {post.user.userId === authUser.userId && (
             <button
-              className="flex items-center justify-center px-4 py-2 mr-4 md:mr-0 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+              className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
               onClick={handleDelete}
             >
               <Trash className="mr-2" />
