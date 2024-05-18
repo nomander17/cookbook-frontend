@@ -25,6 +25,7 @@ export const VerifyOtp = ({
       });
       console.log(response.data);
       setResetPasswordAuth(response.data.jwtToken);
+      showNotification("success", "OTP verified. Please choose a new password.");
       setCurrentForm("resetPassword");
     } catch (error) {
       showNotification("error", error.response.data);
