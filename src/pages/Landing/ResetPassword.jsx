@@ -26,16 +26,22 @@ export const ResetPassword = ({
     if (formData.newPassword !== formData.confirmPassword) {
       showNotification("error", "Passwords do not match");
       return;
-    } else if (formData.confirmPassword.length < 8 ) {
-        showNotification("error", "Password must be at least 8 characters.");
-        return;
+    } else if (formData.confirmPassword.length < 8) {
+      showNotification("error", "Password must be at least 8 characters.");
+      return;
     }
     try {
-      const response = await axios.post(`/auth/reset-password`, formData, {
-        headers: {
-          Authorization: `Bearer ${resetPasswordAuth}`,
+      const response = await axios.post(
+        `/auth/reset-password`,
+        {
+          password: formData.newPassword,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${resetPasswordAuth}`,
+          },
+        }
+      );
       console.log(response.data);
       setCurrentForm("login");
       showNotification("success", "Password reset successful.");
