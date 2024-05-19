@@ -86,7 +86,7 @@ export function SideBar({ children }) {
           <img
             src={profileImage}
             alt="User avatar"
-            className="w-12 h-12 rounded-md hover:cursor-pointer"
+            className="w-12 h-12 rounded-md hover:cursor-pointer object-cover"
             onClick={()=>{navigate("/profile")}}
           />
           <div

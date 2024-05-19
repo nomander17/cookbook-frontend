@@ -236,7 +236,7 @@ export default function ProfileComponent() {
           <img
             src={isEditing ? handleSelectedImagePreview() : getProfileImage()}
             alt={isEditing ? "Selected" : "Profile"}
-            className="inline-block h-32 w-32 rounded-full"
+            className="inline-block h-32 w-32 rounded-full object-cover"
           />
           {isEditing && (
             <label
