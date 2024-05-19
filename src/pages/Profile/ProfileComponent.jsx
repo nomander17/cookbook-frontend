@@ -167,6 +167,7 @@ export default function ProfileComponent() {
       });
       setUser(updatedUser);
       showNotification("success", "Updated Successfully.");
+      // update auth headers and auth user
       setIsEditing(false);
     } catch (error) {
       console.error(error);

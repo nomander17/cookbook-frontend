@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import HomeSideBar from "../Home/HomeSideBar";
 import BottomNavBar from "../../components/BottomNavBar";
 import ProfileComponent from "./ProfileComponent";
+import ProfilePosts from "./ProfilePosts";
 
 export default function Profile() {
   const HIDE_SIDEBAR_WIDTH = 886;
@@ -31,6 +32,8 @@ export default function Profile() {
         {/* panel container to stop flow */}
         <div className="overflow-auto h-screen overflow-x-hidden pb-16 md:pb-0">
           <ProfileComponent />
+          {/* User posts */}
+          <ProfilePosts />
         </div>
       </div>
       {/* bottom navbar for small screens */}
