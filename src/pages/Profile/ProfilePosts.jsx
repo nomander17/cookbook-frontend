@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 import Post from "../Posts/Post";
+import NoContent from "./../../components/NoContent";
 
 export default function ProfilePosts() {
   const [posts, setPosts] = useState([]);
