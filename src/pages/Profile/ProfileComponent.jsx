@@ -7,6 +7,7 @@ import { CircleX, Edit2, Image, Trash, X } from "lucide-react";
 import useNotification from "../../hooks/useNotification";
 import { useNavigate } from "react-router-dom";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
 
 export default function ProfileComponent() {
   const [user, setUser] = useState({
@@ -31,6 +32,7 @@ export default function ProfileComponent() {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   const signOut = useSignOut();
+  const signIn = useSignIn();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -170,18 +172,25 @@ export default function ProfileComponent() {
         }
       );
       // update auth headers and auth user
+      console.log("Profile updated");
+      console.log(response.data);
       if (response.data.jwtToken) {
-        const jwtToken = response.data.jwtToken;
-        signIn({
-          auth: {
-            token: jwtToken,
-            tokenType: "Bearer",
-          },
-        });
-        setAuthUser({
-          username: response.data.username,
-          userId: response.data.userId,
-        });
+        try {
+          signOut();
+          const jwtToken = response.data.jwtToken;
+          signIn({
+            auth: {
+              token: jwtToken,
+              tokenType: "Bearer",
+            },
+          });
+          setAuthUser({
+            username: response.data.username,
+            userId: response.data.userId,
+          });
+        } catch (error) {
+          console.error(error);
+        }
       }
       setUser(updatedUser);
       showNotification("success", "Updated Successfully.");
