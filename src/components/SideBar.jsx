@@ -17,6 +17,14 @@ export function SideBar({ children }) {
   const [user, setUser] = useState({});
   const authHeader = useAuthHeader();
 
+  const logOut = () => {
+    return () => {
+      signOut();
+      setAuthUser(null);
+      navigate("/");
+    };
+  }
+
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
@@ -78,7 +86,8 @@ export function SideBar({ children }) {
           <img
             src={profileImage}
             alt="User avatar"
-            className="w-12 h-12 rounded-md"
+            className="w-12 h-12 rounded-md hover:cursor-pointer"
+            onClick={()=>{navigate("/profile")}}
           />
           <div
             className={`
@@ -93,11 +102,7 @@ export function SideBar({ children }) {
             <div className="hover:cursor-pointer">
               <LogOut
                 color="white"
-                onClick={() => {
-                  signOut();
-                  setAuthUser(null);
-                  navigate("/");
-                }}
+                onClick={logOut()}
               />
             </div>
           </div>

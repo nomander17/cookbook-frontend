@@ -8,6 +8,11 @@ import { LoginForm } from "./LoginForm";
 import { RegistrationForm } from "./RegistrationForm";
 import { ForgotPasswordForm } from "./ForgotPasswordForm";
 import useNotification from "../../hooks/useNotification";
+import { VerifyOtp } from "./VerifyOtp";
+import { ResetPassword } from "./ResetPassword";
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import { useNavigate } from "react-router-dom";
+import axios from "../../api/axios";
 
 const Landing = () => {
   const [currentForm, setCurrentForm] = useState("login");
@@ -15,6 +20,30 @@ const Landing = () => {
     useNotification();
   const [currentImage, setCurrentImage] = useState(LandingImage1);
   const [isImageActive, setIsImageActive] = useState(true);
+  const [otpAuth, setOtpAuth] = useState("");
+  const [resetPasswordAuth, setResetPasswordAuth] = useState("");
+  const authHeader = useAuthHeader();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (authHeader) {
+      const verifyAuth = async () => {
+        try {
+          const response = await axios.get(`/auth/is-admin`, {
+            headers: {
+              Authorization: authHeader,
+            },
+          });
+          if (response.status === 200 && response.data === false) {
+            navigate("/home");
+          } else if (response.status === 200 && response.data === true) {
+            navigate("/admin");
+          }
+        } catch (error) {}
+      };
+      verifyAuth();
+    }
+  }, []);
 
   useEffect(() => {
     const imageCycle = [
@@ -62,6 +91,28 @@ const Landing = () => {
             notification={notification}
             showNotification={showNotification}
             hideNotification={hideNotification}
+            setOtpAuth={setOtpAuth}
+          />
+        );
+      case "verifyOtp":
+        return (
+          <VerifyOtp
+            setCurrentForm={setCurrentForm}
+            notification={notification}
+            showNotification={showNotification}
+            hideNotification={hideNotification}
+            otpAuth={otpAuth}
+            setResetPasswordAuth={setResetPasswordAuth}
+          />
+        );
+      case "resetPassword":
+        return (
+          <ResetPassword
+            setCurrentForm={setCurrentForm}
+            notification={notification}
+            showNotification={showNotification}
+            hideNotification={hideNotification}
+            resetPasswordAuth={resetPasswordAuth}
           />
         );
       default:

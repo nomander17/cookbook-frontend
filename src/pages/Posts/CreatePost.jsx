@@ -120,7 +120,7 @@ const CreatePost = ({ setPosts }) => {
           <div className="flex-1">
             {isPreviewMode ? (
               <div
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg "
+                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg markdown-class"
                 dangerouslySetInnerHTML={{ __html: mdParser.render(content) }}
               />
             ) : (
@@ -155,7 +155,7 @@ const CreatePost = ({ setPosts }) => {
         {/* TODO Dynamic buttons */}
         {/* buttons tray */}
         <div className="mt-4">
-          <div className="flex flex-wrap items-center justify-between">
+          <div className="flex flex-wrap items-center text-xs md:text-sm justify-between">
             {/* Image button */}
             <div className="flex items-center mb-2 sm:mb-0">
               <label htmlFor="imageInput" className="cursor-pointer">

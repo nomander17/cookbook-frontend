@@ -57,6 +57,18 @@ export default function Panel({ currentTable }) {
 
   const handleUpdate = async (id, updatedData) => {
     try {
+      if (updatedData.user) {
+        delete updatedData.user;
+      }
+      if (updatedData.likes) {
+        delete updatedData.likes;
+      }
+      if (updatedData.posts) {
+        delete updatedData.posts;
+      }
+      if (updatedData.post) {
+        delete updatedData.post;
+      }
       const response = await api.put(
         `/${currentTable}/${id}`,
         updatedData,

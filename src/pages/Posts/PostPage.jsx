@@ -18,7 +18,21 @@ export default function PostPage() {
   const [newPostCreated, setNewPostCreated] = useState(false);
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
-  
+
+  const HIDE_SIDEBAR_WIDTH = 886;
+  const [isSideBarVisible, setIsSideBarVisible] = useState(
+    window.innerWidth > HIDE_SIDEBAR_WIDTH
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsSideBarVisible(window.innerWidth >= 866);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     if (!post) {
@@ -74,9 +88,13 @@ export default function PostPage() {
 
   return (
     <div className="max-w-screen max-h-screen flex overflow-hidden">
-      <div className="hidden md:block">
-        <HomeSideBar />
-      </div>
+      {isSideBarVisible ? (
+        <div className="block">
+          <HomeSideBar active={"home"} />
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="bg-foreground flex-1 h-screen">
         {/* panel container to stop flow */}
         <div className="overflow-auto h-screen px-10 overflow-x-hidden pb-16 md:pb-0">
@@ -122,9 +140,13 @@ export default function PostPage() {
         </div>
       </div>
       {/* bottom navbar for small screens */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0">
-        <BottomNavBar />
-      </div>
+      {!isSideBarVisible ? (
+        <div className="fixed inset-x-0 bottom-0">
+          <BottomNavBar />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }

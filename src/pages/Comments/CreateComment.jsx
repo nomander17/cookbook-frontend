@@ -120,7 +120,7 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
           </div>
           {/* Move the button next to the textarea */}
           {/* BUTTONS WHEN SCREEN BIG */}
-          <div className="flex items-center">
+          <div className="flex items-center text-xs md:text-sm">
             <label htmlFor="imageInput" className="cursor-pointer">
               <div className="md:flex items-center text-blue-600 px-3 py-2 rounded-lg hover:bg-gray-200 transition duration-300 hidden">
                 <Image className="h-6 w-6 mr-2" />
