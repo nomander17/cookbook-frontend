@@ -5,19 +5,24 @@ import axios from "axios";
 
 const BASE_URL = "http://localhost:8090/api";
 
-export const RegistrationForm = ({ setCurrentForm, notification, showNotification, hideNotification }) => {
+export const RegistrationForm = ({
+  setCurrentForm,
+  notification,
+  showNotification,
+  hideNotification,
+}) => {
   const [formData, setFormData] = useState({
     userName: "",
     name: "",
     email: "",
     password: "",
   });
-  
+
   const [showPassword, setShowPassword] = useState(false);
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
   const handlePasswordChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     const validatePassword = (e) => {
@@ -50,15 +55,24 @@ export const RegistrationForm = ({ setCurrentForm, notification, showNotificatio
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${BASE_URL}/auth/register`, formData);
+      const trimFormData = (formData) =>
+        Object.fromEntries(
+          Object.entries(formData).map(([key, value]) => [
+            key,
+            typeof value === "string" ? value.trim() : value,
+          ])
+        );
+      const response = await axios.post(`${BASE_URL}/auth/register`, trimFormData(formData));
       console.log(response);
       if (response.status === 200) {
         handleRegisterSuccess(response);
       } else if (response.status === 400) {
-        
       }
     } catch (error) {
-      showNotification("error", error.response.data);
+      if(error.response) {
+        showNotification("error", error.response.data);
+      }
+      console.error(error);
     }
   };
 
@@ -143,7 +157,7 @@ export const RegistrationForm = ({ setCurrentForm, notification, showNotificatio
           className="py-2 px-3 border rounded-xl hover:scale-105 duration-300"
           onClick={() => {
             setCurrentForm("login");
-            showNotification()
+            showNotification();
           }}
         >
           Login

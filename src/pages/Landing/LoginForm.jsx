@@ -42,7 +42,14 @@ export const LoginForm = ({
     console.log("Login submit pressed");
     console.log("Form Data:", formData);
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, formData);
+      const trimFormData = (formData) =>
+        Object.fromEntries(
+          Object.entries(formData).map(([key, value]) => [
+            key,
+            typeof value === "string" ? value.trim() : value,
+          ])
+        );
+      const response = await axios.post(`${BASE_URL}/auth/login`, trimFormData(formData));
       const jwtToken = response.data.jwtToken;
       signIn({
         auth: {
