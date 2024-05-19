@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import Notification from "../../components/Notifications";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { CircleX, Edit2, Image } from "lucide-react";
+import useNotification from "../../hooks/useNotification";
 
 export default function ProfileComponent() {
   const [user, setUser] = useState({
@@ -22,6 +24,8 @@ export default function ProfileComponent() {
   const [isEditing, setIsEditing] = useState(false);
   const { authUser } = useAuthUserContext();
   const authHeader = useAuthHeader();
+  const { notification, showNotification, hideNotification } =
+    useNotification();
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
@@ -46,6 +50,7 @@ export default function ProfileComponent() {
         }
       } catch (error) {
         console.error();
+        showNotification("error", error.response.data);
       }
     }
     fetchProfile();
@@ -76,6 +81,7 @@ export default function ProfileComponent() {
 
   const handleRemoveImage = () => {
     setSelectedImage(null);
+    user.avatar = null;
   };
 
   const handleInputChange = (e) => {
@@ -126,6 +132,7 @@ export default function ProfileComponent() {
         },
       });
       setUser(updatedUser);
+      showNotification("success", "Updated Successfully.");
       setIsEditing(false);
     } catch (error) {
       console.error(error);
@@ -134,22 +141,31 @@ export default function ProfileComponent() {
 
   return (
     <div className="bg-[#384754] shadow-md rounded-lg p-6 md:w-2/3 mt-10 m-auto w-[90%] relative">
-      <div className="flex justify-end mb-6">
-        {isEditing ? (
-          <button
-            className="text-white focus:outline-none"
-            onClick={handleCancelClick}
-          >
-            <CircleX className="h-6 w-6" />
-          </button>
-        ) : (
-          <button
-            className="text-white focus:outline-none"
-            onClick={handleEditClick}
-          >
-            <Edit2 className="h-6 w-6" />
-          </button>
+      <div className="flex flex-col items-center justify-center">
+        {notification && (
+          <Notification
+            content={notification.content}
+            category={notification.category}
+            onClose={hideNotification}
+          />
         )}
+        <div className="self-end mb-6">
+          {isEditing ? (
+            <button
+              className="text-white focus:outline-none"
+              onClick={handleCancelClick}
+            >
+              <CircleX className="h-6 w-6" />
+            </button>
+          ) : (
+            <button
+              className="text-white focus:outline-none"
+              onClick={handleEditClick}
+            >
+              <Edit2 className="h-6 w-6" />
+            </button>
+          )}
+        </div>
       </div>
       <div className="flex flex-col md:flex-row items-center">
         <div className="relative mb-6 md:mb-0 md:mr-8">
