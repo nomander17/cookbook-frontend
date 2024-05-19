@@ -17,6 +17,14 @@ export function SideBar({ children }) {
   const [user, setUser] = useState({});
   const authHeader = useAuthHeader();
 
+  const logOut = () => {
+    return () => {
+      signOut();
+      setAuthUser(null);
+      navigate("/");
+    };
+  }
+
   useEffect(() => {
     const fetchProfileImage = async () => {
       try {
@@ -93,11 +101,7 @@ export function SideBar({ children }) {
             <div className="hover:cursor-pointer">
               <LogOut
                 color="white"
-                onClick={() => {
-                  signOut();
-                  setAuthUser(null);
-                  navigate("/");
-                }}
+                onClick={logOut()}
               />
             </div>
           </div>

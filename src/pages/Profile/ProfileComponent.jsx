@@ -3,8 +3,10 @@ import Notification from "../../components/Notifications";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
-import { CircleX, Edit2, Image } from "lucide-react";
+import { CircleX, Edit2, Image, Trash, X } from "lucide-react";
 import useNotification from "../../hooks/useNotification";
+import { useNavigate } from "react-router-dom";
+import useSignOut from "react-auth-kit/hooks/useSignOut";
 
 export default function ProfileComponent() {
   const [user, setUser] = useState({
@@ -22,11 +24,13 @@ export default function ProfileComponent() {
     avatar: "NO AVATAR",
   });
   const [isEditing, setIsEditing] = useState(false);
-  const { authUser } = useAuthUserContext();
   const authHeader = useAuthHeader();
+  const { authUser, setAuthUser } = useAuthUserContext();
   const { notification, showNotification, hideNotification } =
     useNotification();
   const [selectedImage, setSelectedImage] = useState(null);
+  const navigate = useNavigate();
+  const signOut = useSignOut();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -82,6 +86,36 @@ export default function ProfileComponent() {
   const handleRemoveImage = () => {
     setSelectedImage(null);
     user.avatar = null;
+  };
+
+  const openDeletePopup = () => {
+    const deleteDialog = document.getElementById("deleteDialog");
+    if (deleteDialog) {
+      deleteDialog.showModal();
+    }
+  };
+
+  const closeDeletePopup = () => {
+    const deleteDialog = document.getElementById("deleteDialog");
+    if (deleteDialog) {
+      deleteDialog.close();
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      await axios.delete(`/users/${user.userId}`, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
+      signOut();
+      setAuthUser(null);
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      showNotification("error", "Failed to delete account");
+    }
   };
 
   const handleInputChange = (e) => {
@@ -249,6 +283,41 @@ export default function ProfileComponent() {
             </div>
           )}
         </div>
+      </div>
+      <div className="flex justify-center self-center mt-8">
+        {/* delete button */}
+        <button
+          className="flex items-center justify-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+          onClick={openDeletePopup}
+        >
+          <Trash className="mr-2" />
+          Delete Account
+        </button>
+      </div>
+      <div>
+        <dialog
+          id="deleteDialog"
+          className="bg-white p-8 rounded-lg shadow-lg relative"
+        >
+          <button
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 focus:outline-none"
+            onClick={closeDeletePopup}
+          >
+            <X className="w-6 h-6 mb-2" />
+          </button>
+          <p className="text-lg font-semibold mb-4">
+            Are you sure you want to delete your account?
+          </p>
+          <p className="text-gray-600 mb-6">This process is irreversible.</p>
+          <div className="flex justify-end">
+            <button
+              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-700 transition duration-300 ease-in-out"
+              onClick={handleDeleteUser}
+            >
+              Yes, I am sure
+            </button>
+          </div>
+        </dialog>
       </div>
     </div>
   );
