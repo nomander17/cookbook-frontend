@@ -158,19 +158,39 @@ export default function ProfileComponent() {
       }
       const updatedUser = {
         ...editingUser,
-        avatar: base64Image ? base64Image.split(",")[1] : null,
+        avatar: base64Image ? base64Image.split(",")[1] : user.avatar, // Use existing user avatar if no new image selected
       };
-      await axios.put(`/users/${user.userId}/profile`, updatedUser, {
-        headers: {
-          Authorization: authHeader,
-        },
-      });
+      const response = await axios.put(
+        `/users/${user.userId}/profile`,
+        updatedUser,
+        {
+          headers: {
+            Authorization: authHeader,
+          },
+        }
+      );
+      // update auth headers and auth user
+      if (response.data.jwtToken) {
+        const jwtToken = response.data.jwtToken;
+        signIn({
+          auth: {
+            token: jwtToken,
+            tokenType: "Bearer",
+          },
+        });
+        setAuthUser({
+          username: response.data.username,
+          userId: response.data.userId,
+        });
+      }
       setUser(updatedUser);
       showNotification("success", "Updated Successfully.");
-      // update auth headers and auth user
       setIsEditing(false);
     } catch (error) {
       console.error(error);
+      if (error.response) {
+        showNotification("error", error.response.data);
+      }
     }
   };
 
