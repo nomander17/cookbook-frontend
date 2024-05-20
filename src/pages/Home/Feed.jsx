@@ -3,11 +3,19 @@ import CreatePost from "../Posts/CreatePost";
 import Post from "../Posts/Post";
 import NoContent from "../../components/NoContent";
 import axios from "../../api/axios";
-import useAuthHeader from 'react-auth-kit/hooks/useAuthHeader';
+import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import useNotification from "../../hooks/useNotification";
+import Notification from "../../components/Notifications";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
   const authHeader = useAuthHeader();
+
+  const { notification, showNotification, hideNotification } =
+    useNotification();
+  const onPost = () => {
+    showNotification("success", "Successfully posted.");
+  };
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -36,8 +44,17 @@ export const Feed = () => {
 
   return (
     <div className="flex text-center w-full">
-      <div className="md:w-2/3 m-auto w-[90%] bg-foreground">
-        <CreatePost setPosts={setPosts} />
+      <div className="md:w-3/4 m-auto w-[90%] bg-foreground">
+        {notification && (
+          <div className="mt-5 flex justify-center self-center">
+            <Notification
+              content={notification.content}
+              category={notification.category}
+              onClose={hideNotification}
+            />
+          </div>
+        )}
+        <CreatePost setPosts={setPosts} onPost={onPost} />
         <div className="mt-4">
           {posts.length === 0 ? (
             <NoContent />
