@@ -8,6 +8,8 @@ import AuthProvider from "react-auth-kit";
 import RequireAuth from "@auth-kit/react-router/RequireAuth";
 import { AuthUserProvider } from "./context/AuthUserContext";
 import Profile from "./pages/Profile/Profile";
+import LikedPosts from "./pages/LikedPosts/LikedPosts";
+import CreatePostPage from "./pages/CreatePost/CreatePostPage.jsx";
 
 const store = createStore({
   authName: "_auth",
@@ -53,6 +55,22 @@ function App() {
                 element={
                   <RequireAuth fallbackPath={"/"}>
                     <Profile />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/liked-posts"
+                element={
+                  <RequireAuth fallbackPath={"/"}>
+                    <LikedPosts />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/create-post"
+                element={
+                  <RequireAuth fallbackPath={"/"}>
+                    <CreatePostPage />
                   </RequireAuth>
                 }
               />
