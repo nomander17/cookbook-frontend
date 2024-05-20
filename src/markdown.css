@@ -57,10 +57,11 @@
   }
   
   .markdown-body pre {
-    @apply bg-gray-900 p-4 rounded overflow-auto;
+    @apply bg-gray-900 p-4 rounded overflow-auto whitespace-pre-wrap;
   }
   
   .markdown-body code {
-    @apply bg-gray-900 text-gray-300 text-sm py-1 px-2 rounded;
+    @apply bg-gray-900 text-gray-300 text-sm py-1 px-2 rounded break-words;
   }
+  
   
