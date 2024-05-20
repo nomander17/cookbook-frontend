@@ -53,7 +53,7 @@ function HomeSideBar({ active }) {
       />
       <SideBarItem
         icon={<ThumbsUp />}
-        text={"Liked posts"}
+        text={"Liked Posts"}
         active={active === "liked-posts"}
         onClick={() => {
           navigate("/liked-posts");
