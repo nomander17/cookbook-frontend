@@ -204,7 +204,7 @@ export default function ProfileComponent() {
   };
 
   return (
-    <div className="bg-[#384754] shadow-md rounded-lg p-6 md:w-2/3 mt-10 m-auto w-[90%] relative">
+    <div className="bg-[#384754] shadow-md rounded-lg p-6 md:w-3/4 mt-10 m-auto w-[90%] relative">
       <div className="flex flex-col items-center justify-center">
         {notification && (
           <Notification
@@ -257,7 +257,7 @@ export default function ProfileComponent() {
             </label>
           )}
         </div>
-        <div className="w-full md:w-2/3 ml-auto">
+        <div className="w-full md:w-3/4 ml-auto">
           {isEditing ? (
             <form onSubmit={handleSubmit}>
               <input

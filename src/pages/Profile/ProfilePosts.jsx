@@ -36,7 +36,7 @@ export default function ProfilePosts() {
   };
 
   return (
-    <div className="md:w-2/3 m-auto w-[90%] bg-foreground mt-4">
+    <div className="md:w-3/4 m-auto w-[90%] bg-foreground mt-4">
       {posts.length === 0 ? (
         <NoContent />
       ) : (
