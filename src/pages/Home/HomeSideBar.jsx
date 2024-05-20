@@ -1,11 +1,18 @@
 import { useNavigate } from "react-router-dom";
 import { SideBar, SideBarItem } from "../../components/SideBar";
-import { Bell, HomeIcon, Shield, SquarePen, User } from "lucide-react";
+import {
+  Bell,
+  HomeIcon,
+  Shield,
+  SquarePen,
+  ThumbsUp,
+  User,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 
-function HomeSideBar({active}) {
+function HomeSideBar({ active }) {
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -45,19 +52,19 @@ function HomeSideBar({active}) {
         }}
       />
       <SideBarItem
-        icon={<Bell />}
-        text={"Notifications"}
-        active={active === "notifications"}
+        icon={<ThumbsUp />}
+        text={"Liked posts"}
+        active={active === "liked-posts"}
         onClick={() => {
-          navigate("/notifications");
+          navigate("/liked-posts");
         }}
       />
       <SideBarItem
         icon={<SquarePen />}
-        text={"Post"}
-        active={active === "post"}
+        text={"Create Post"}
+        active={active === "create-post"}
         onClick={() => {
-          navigate("/post");
+          navigate("/create-post");
         }}
       />
       {isAdmin && (
