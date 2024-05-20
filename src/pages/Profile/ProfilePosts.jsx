@@ -3,6 +3,7 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 import Post from "../Posts/Post";
 import NoContent from "./../../components/NoContent";
+import axios from "../../api/axios";
 
 export default function ProfilePosts() {
   const [posts, setPosts] = useState([]);
@@ -35,7 +36,7 @@ export default function ProfilePosts() {
   };
 
   return (
-    <div className="mt-4">
+    <div className="md:w-2/3 m-auto w-[90%] bg-foreground mt-4">
       {posts.length === 0 ? (
         <NoContent />
       ) : (
