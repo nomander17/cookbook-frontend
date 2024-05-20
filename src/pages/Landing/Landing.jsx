@@ -128,7 +128,6 @@ const Landing = () => {
           {renderForm()}
           <div className="md:block hidden w-1/2">
             <img
-              alt="cool"
               className={`rounded-xl w-[360px] h-[450px] image-transition ${
                 isImageActive ? "active" : ""
               }`}
