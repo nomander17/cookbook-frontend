@@ -6,6 +6,7 @@ import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import useNotification from "../../hooks/useNotification";
 import Notification from "../../components/Notifications";
+import SearchBar from "./SearchBar";
 
 export const Feed = () => {
   const [posts, setPosts] = useState([]);
@@ -54,6 +55,8 @@ export const Feed = () => {
             />
           </div>
         )}
+        {/* search bar */}
+        <SearchBar setPosts={setPosts} />
         <CreatePost setPosts={setPosts} onPost={onPost} />
         <div className="mt-4">
           {posts.length === 0 ? (

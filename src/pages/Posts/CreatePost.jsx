@@ -194,7 +194,7 @@ const CreatePost = ({ setPosts, largeText, onPost }) => {
 
             {/* Word count */}
             <span
-              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 md:mb-0 md:ml-4
+              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 ml-2 md:mb-0 md:ml-4
         ${wordCount > wordCountLimit ? "bg-red-600" : ""}
       `}
             >
