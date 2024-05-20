@@ -7,7 +7,7 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 const mdParser = new MarkdownIt();
 
-const CreatePost = ({ setPosts }) => {
+const CreatePost = ({ setPosts, largeText, onPost }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -70,6 +70,7 @@ const CreatePost = ({ setPosts }) => {
         },
       });
       setPosts(resposnse.data);
+      onPost();
       setContent("");
       setSelectedImage(null);
     } catch (error) {
@@ -120,12 +121,12 @@ const CreatePost = ({ setPosts }) => {
           <div className="flex-1">
             {isPreviewMode ? (
               <div
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg markdown-class"
+                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg markdown-body"
                 dangerouslySetInnerHTML={{ __html: mdParser.render(content) }}
               />
             ) : (
               <textarea
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg"
+                className={`bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg ${largeText ? "h-svh" : ""}`}
                 value={content}
                 onChange={handleContentChange}
                 placeholder="What's cooking?"
@@ -152,7 +153,6 @@ const CreatePost = ({ setPosts }) => {
             </div>
           </div>
         )}
-        {/* TODO Dynamic buttons */}
         {/* buttons tray */}
         <div className="mt-4">
           <div className="flex flex-wrap items-center text-xs md:text-sm justify-between">
