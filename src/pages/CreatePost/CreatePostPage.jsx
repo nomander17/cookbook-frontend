@@ -45,7 +45,7 @@ export default function CreatePostPage() {
       </div>
       {/* bottom navbar for small screens */}
       <div className="md:hidden fixed inset-x-0 bottom-0">
-        <BottomNavBar active={"profile"} />
+        <BottomNavBar active={"create-post"} />
       </div>
     </div>
   );
