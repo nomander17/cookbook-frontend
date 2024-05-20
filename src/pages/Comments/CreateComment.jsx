@@ -103,7 +103,7 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
         <div className="flex items-center">
           <div className="mr-4">
             <img
-              className="inline-block h-12 w-12 rounded-full"
+              className="inline-block h-12 w-12 rounded-full object-cover"
               src={profileImage}
               alt=""
             />

@@ -7,6 +7,7 @@ import { CircleX, Edit2, Image, Trash, X } from "lucide-react";
 import useNotification from "../../hooks/useNotification";
 import { useNavigate } from "react-router-dom";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
+import useSignIn from "react-auth-kit/hooks/useSignIn";
 
 export default function ProfileComponent() {
   const [user, setUser] = useState({
@@ -31,6 +32,7 @@ export default function ProfileComponent() {
   const [selectedImage, setSelectedImage] = useState(null);
   const navigate = useNavigate();
   const signOut = useSignOut();
+  const signIn = useSignIn();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -158,19 +160,46 @@ export default function ProfileComponent() {
       }
       const updatedUser = {
         ...editingUser,
-        avatar: base64Image ? base64Image.split(",")[1] : null,
+        avatar: base64Image ? base64Image.split(",")[1] : user.avatar, // Use existing user avatar if no new image selected
       };
-      await axios.put(`/users/${user.userId}/profile`, updatedUser, {
-        headers: {
-          Authorization: authHeader,
-        },
-      });
+      const response = await axios.put(
+        `/users/${user.userId}/profile`,
+        updatedUser,
+        {
+          headers: {
+            Authorization: authHeader,
+          },
+        }
+      );
+      // update auth headers and auth user
+      console.log("Profile updated");
+      console.log(response.data);
+      if (response.data.jwtToken) {
+        try {
+          signOut();
+          const jwtToken = response.data.jwtToken;
+          signIn({
+            auth: {
+              token: jwtToken,
+              tokenType: "Bearer",
+            },
+          });
+          setAuthUser({
+            username: response.data.username,
+            userId: response.data.userId,
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
       setUser(updatedUser);
       showNotification("success", "Updated Successfully.");
-      // update auth headers and auth user
       setIsEditing(false);
     } catch (error) {
       console.error(error);
+      if (error.response) {
+        showNotification("error", error.response.data);
+      }
     }
   };
 
@@ -207,7 +236,7 @@ export default function ProfileComponent() {
           <img
             src={isEditing ? handleSelectedImagePreview() : getProfileImage()}
             alt={isEditing ? "Selected" : "Profile"}
-            className="inline-block h-32 w-32 rounded-full"
+            className="inline-block h-32 w-32 rounded-full object-cover"
           />
           {isEditing && (
             <label

@@ -178,7 +178,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
       <div className="flex items-center">
         <div className="flex-shrink-0">
           <img
-            className="inline-block h-10 w-10 rounded-full"
+            className="inline-block h-10 w-10 rounded-full object-cover"
             src={getProfileImage()}
             alt=""
           />
