@@ -149,9 +149,9 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
   const truncatePost = (body) => {
     if (typeof body === "string" && body.trim().length > 0) {
       const words = body.split(" ");
-      if (words.length > 100) {
+      if (words.length > 80) {
         return {
-          truncatedText: words.slice(0, 100).join(" ") + "...",
+          truncatedText: words.slice(0, 80).join(" ") + "...",
           truncated: true,
         };
       }
