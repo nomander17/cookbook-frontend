@@ -67,11 +67,6 @@ export const Feed = () => {
               .map((post) => (
                 <Post
                   key={post.postId}
-                  author={{
-                    name: post.user.name,
-                    username: post.user.username,
-                    avatar: post.user.avatar,
-                  }}
                   postId={post.postId}
                   timeFormat={"relative"}
                   onClickEnabled={true}
