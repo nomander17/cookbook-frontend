@@ -92,7 +92,7 @@ const Admin = () => {
       </div>
       {/* bottom navbar for small screens */}
       <div className="md:hidden fixed inset-x-0 bottom-0">
-        <BottomNavBar active={"create-post"} />
+        <BottomNavBar active={"admin"} />
       </div>
     </div>
   );

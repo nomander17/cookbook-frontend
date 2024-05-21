@@ -69,15 +69,11 @@ export default function Panel({ currentTable }) {
       if (updatedData.post) {
         delete updatedData.post;
       }
-      const response = await api.put(
-        `/${currentTable}/${id}`,
-        updatedData,
-        {
-          headers: {
-            Authorization: authHeader,
-          },
-        }
-      );
+      const response = await api.put(`/${currentTable}/${id}`, updatedData, {
+        headers: {
+          Authorization: authHeader,
+        },
+      });
       console.log(response);
     } catch (error) {
       console.log(`Error updating data: ${error}`);
@@ -89,97 +85,107 @@ export default function Panel({ currentTable }) {
 
   return (
     <div>
-      <h1 className="text-center my-6 font-bold text-3xl text-slate-200 drop-shadow-md">
-        {currentTable.toUpperCase()}
-      </h1>
-      <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
-        <tr>
-          {keys.map((key) => (
-            <TableHead key={key} text={key} />
-          ))}
-        </tr>
-        {Array.isArray(data) ? (
-          data.map((item, index) => {
-            const idKey = Object.keys(item).find((k) =>
-              k.toLowerCase().includes("id")
-            );
-            const rowId = item[idKey];
+      <div className="md:hidden flex">
+        <div className="text-center mt-20 p-6 text-2xl text-offwhite">
+          This page is only available for desktop. Please switch to a larger
+          screen to view the content.
+        </div>
+      </div>
 
-            return (
-              <tr key={index}>
-                {Object.entries(item).map(([key, value], i) => {
-                  if (key === "image" || key === "avatar") {
-                    if (value == null) {
-                      return (
-                        <TableData key={i}>
-                          <p>[No image]</p>
-                        </TableData>
-                      );
-                    } else {
-                      return (
-                        <TableData key={i}>
-                          <img
-                            src={`data:image/jpeg;base64,${value}`}
-                            title={`${key}`}
-                            className="max-w-xs max-h-40"
-                            alt=""
-                          />
-                        </TableData>
-                      );
-                    }
-                  }
-                  if (Array.isArray(value)) {
-                    value = value.length;
-                  } else if (value && typeof value === "object") {
-                    const idKey = Object.keys(value).find((k) =>
-                      k.toLowerCase().includes("id")
-                    );
-                    value = idKey
-                      ? value[idKey]
-                      : JSON.stringify(value, null, 2).slice(0, 150);
-                  } else if (typeof value === "string") {
-                    value =
-                      value.slice(0, 100) + (value.length > 100 ? " ..." : "");
-                  }
-                  return <TableData key={i} text={value} />;
-                })}
-
-                <TableData>
-                  <button
-                    className="text-indigo-600 hover:text-indigo-900"
-                    onClick={() => handleEdit(rowId, index)}
-                  >
-                    Edit
-                  </button>
-                </TableData>
-                <TableData>
-                  <button
-                    className="text-red-600 hover:text-red-900"
-                    onClick={() => handleDelete(rowId)}
-                  >
-                    Delete
-                  </button>
-                </TableData>
-              </tr>
-            );
-          })
-        ) : (
+      <div className="hidden md:block">
+        <h1 className="text-center my-6 font-bold text-3xl text-slate-200 drop-shadow-md">
+          {currentTable.toUpperCase()}
+        </h1>
+        <table className="table-auto min-w-full max-w-100 overflow-hidden divide-y divide-neutral-700">
           <tr>
-            <td>
-              <div className="text-center text-white mt-5 text-xl">
-                Empty table.
-              </div>
-            </td>
+            {keys.map((key) => (
+              <TableHead key={key} text={key} />
+            ))}
           </tr>
-        )}
-      </table>
-      {isEditing && editingRow ? (
-        <EditModal
-          row={editingRow}
-          onClose={() => setIsEditing(false)}
-          onSubmit={(updatedData) => handleUpdate(editingRowId, updatedData)}
-        />
-      ) : null}
+          {Array.isArray(data) ? (
+            data.map((item, index) => {
+              const idKey = Object.keys(item).find((k) =>
+                k.toLowerCase().includes("id")
+              );
+              const rowId = item[idKey];
+
+              return (
+                <tr key={index}>
+                  {Object.entries(item).map(([key, value], i) => {
+                    if (key === "image" || key === "avatar") {
+                      if (value == null) {
+                        return (
+                          <TableData key={i}>
+                            <p>[No image]</p>
+                          </TableData>
+                        );
+                      } else {
+                        return (
+                          <TableData key={i}>
+                            <img
+                              src={`data:image/jpeg;base64,${value}`}
+                              title={`${key}`}
+                              className="max-w-xs max-h-40"
+                              alt=""
+                            />
+                          </TableData>
+                        );
+                      }
+                    }
+                    if (Array.isArray(value)) {
+                      value = value.length;
+                    } else if (value && typeof value === "object") {
+                      const idKey = Object.keys(value).find((k) =>
+                        k.toLowerCase().includes("id")
+                      );
+                      value = idKey
+                        ? value[idKey]
+                        : JSON.stringify(value, null, 2).slice(0, 150);
+                    } else if (typeof value === "string") {
+                      value =
+                        value.slice(0, 100) +
+                        (value.length > 100 ? " ..." : "");
+                    }
+                    return <TableData key={i} text={value} />;
+                  })}
+
+                  <TableData>
+                    <button
+                      className="text-indigo-600 hover:text-indigo-900"
+                      onClick={() => handleEdit(rowId, index)}
+                    >
+                      Edit
+                    </button>
+                  </TableData>
+                  <TableData>
+                    <button
+                      className="text-red-600 hover:text-red-900"
+                      onClick={() => handleDelete(rowId)}
+                    >
+                      Delete
+                    </button>
+                  </TableData>
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td>
+                <div className="text-center text-white mt-5 text-xl">
+                  Empty table.
+                </div>
+              </td>
+            </tr>
+          )}
+        </table>
+        {isEditing && editingRow ? (
+          <EditModal
+            row={editingRow}
+            onClose={() => setIsEditing(false)}
+            onSubmit={(updatedData) => handleUpdate(editingRowId, updatedData)}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }
