@@ -45,10 +45,9 @@ export function SideBar({ children }) {
         } else {
           setProfileImage(`data:image/jpeg;base64,${fetchedUser.avatar}`);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user", error);
-      } finally {
-        setLoading(false);
       }
     };
 

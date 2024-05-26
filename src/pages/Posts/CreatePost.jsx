@@ -105,10 +105,9 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
         } else {
           setProfileImage(`data:image/jpeg;base64,${user.avatar}`);
         }
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching user", error);
-      } finally {
-        setLoading(false);
       }
     };
 

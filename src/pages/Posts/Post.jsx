@@ -33,10 +33,9 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         setPost(response.data);
         setLiked(alreadyLiked(response.data.likes));
         console.log("Fetching post ", postId);
+        setLoading(false);
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchPost();

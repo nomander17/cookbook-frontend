@@ -28,10 +28,9 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
         );
         setComment(response.data);
         setLiked(alreadyLiked(response.data.likes));
+        setLoading(false);
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
-      } finally {
-        setLoading(false);
       }
     };
 

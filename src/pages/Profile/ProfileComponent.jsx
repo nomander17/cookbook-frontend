@@ -51,11 +51,12 @@ export default function ProfileComponent() {
             avatar: response.data.avatar,
           });
         }
+        setLoading(false);
       } catch (error) {
         console.error();
-        showNotification("error", error.response.data);
-      } finally {
-        setLoading(false);
+        if (error.response.data) {
+          showNotification("error", error.response.data);
+        }
       }
     }
     fetchProfile();
