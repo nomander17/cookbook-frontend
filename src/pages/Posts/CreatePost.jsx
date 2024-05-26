@@ -7,7 +7,7 @@ import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 const mdParser = new MarkdownIt();
 
-const CreatePost = ({ setPosts, largeText, onPost }) => {
+const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
   const [isPreviewMode, setIsPreviewMode] = useState(false);
@@ -46,7 +46,10 @@ const CreatePost = ({ setPosts, largeText, onPost }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    if (content === "" && selectedImage === null) {
+      showNotification("error", "Cannot create empty post.");
+      return;
+    }
     try {
       let base64Image = null;
       if (selectedImage) {

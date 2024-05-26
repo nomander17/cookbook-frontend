@@ -5,7 +5,7 @@ import { Image, X } from "lucide-react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
 
-const CreateComment = ({ postId, setComments, replyInFocus }) => {
+const CreateComment = ({ postId, setComments, replyInFocus, showNotification }) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
   const authHeader = useAuthHeader();
@@ -40,6 +40,10 @@ const CreateComment = ({ postId, setComments, replyInFocus }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (content === "" && selectedImage === null) {
+      showNotification("error", "Cannot create empty comment.");
+      return;
+    }
     
     try {
       let base64Image = null;

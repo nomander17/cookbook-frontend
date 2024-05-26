@@ -57,7 +57,7 @@ export const Feed = () => {
         )}
         {/* search bar */}
         <SearchBar setPosts={setPosts} />
-        <CreatePost setPosts={setPosts} onPost={onPost} />
+        <CreatePost setPosts={setPosts} onPost={onPost} showNotification={showNotification} />
         <div className="mt-4">
           {posts.length === 0 ? (
             <NoContent />

@@ -8,6 +8,8 @@ import CreateComment from "../Comments/CreateComment";
 import NoContent from "../../components/NoContent";
 import BottomNavBar from "../../components/BottomNavBar";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
+import Notification from "../../components/Notifications";
+import useNotification from "../../hooks/useNotification";
 
 export default function PostPage() {
   const { postId } = useParams();
@@ -18,6 +20,8 @@ export default function PostPage() {
   const [newPostCreated, setNewPostCreated] = useState(false);
   const navigate = useNavigate();
   const authHeader = useAuthHeader();
+  const { notification, showNotification, hideNotification } =
+    useNotification();
 
   useEffect(() => {
     if (!post) {
@@ -94,7 +98,17 @@ export default function PostPage() {
             setComments={setComments}
             onCommentCreated={handleNewPostCreated}
             replyInFocus={replyInFocus}
+            showNotification={showNotification}
           />
+          {notification && (
+            <div className="mt-5 flex justify-center self-center">
+              <Notification
+                content={notification.content}
+                category={notification.category}
+                onClose={hideNotification}
+              />
+            </div>
+          )}
           {/* COMMENTS feed here */}
           <div className="mt-4">
             {comments.length === 0 ? (
