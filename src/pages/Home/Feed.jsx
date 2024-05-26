@@ -46,6 +46,8 @@ export const Feed = () => {
   return (
     <div className="flex text-center w-full">
       <div className="md:w-3/4 m-auto w-[90%] bg-foreground">
+        {/* search bar */}
+        <SearchBar setPosts={setPosts} />
         {notification && (
           <div className="mt-5 flex justify-center self-center">
             <Notification
@@ -55,8 +57,6 @@ export const Feed = () => {
             />
           </div>
         )}
-        {/* search bar */}
-        <SearchBar setPosts={setPosts} />
         <CreatePost setPosts={setPosts} onPost={onPost} showNotification={showNotification} />
         <div className="mt-4">
           {posts.length === 0 ? (
