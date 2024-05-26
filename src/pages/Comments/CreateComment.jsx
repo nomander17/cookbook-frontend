@@ -4,13 +4,20 @@ import autosize from "autosize";
 import { Image, X } from "lucide-react";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
+import CreateLoading from "../../components/CreateLoading";
 
-const CreateComment = ({ postId, setComments, replyInFocus, showNotification }) => {
+const CreateComment = ({
+  postId,
+  setComments,
+  replyInFocus,
+  showNotification,
+}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [content, setContent] = useState("");
   const authHeader = useAuthHeader();
   const { authUser } = useAuthUserContext();
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleContentChange = (event) => {
     setContent(event.target.value);
@@ -44,7 +51,7 @@ const CreateComment = ({ postId, setComments, replyInFocus, showNotification }) 
       showNotification("error", "Cannot create empty comment.");
       return;
     }
-    
+
     try {
       let base64Image = null;
       if (selectedImage) {
@@ -78,6 +85,7 @@ const CreateComment = ({ postId, setComments, replyInFocus, showNotification }) 
 
   useEffect(() => {
     const fetchProfileImage = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`/users/${authUser.userId}`, {
           headers: {
@@ -95,11 +103,17 @@ const CreateComment = ({ postId, setComments, replyInFocus, showNotification }) 
         }
       } catch (error) {
         console.error("Error fetching user", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfileImage();
   }, [authUser.userId, authHeader]);
+
+  if (loading) {
+    return <CreateLoading />;
+  }
 
   return (
     <form onSubmit={handleSubmit}>

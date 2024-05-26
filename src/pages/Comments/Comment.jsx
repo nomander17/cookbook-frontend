@@ -4,18 +4,11 @@ import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import axios from "../../api/axios";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
+import ContentLoading from "../../components/ContentLoading";
 
 const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
-  const [comment, setComment] = useState({
-    user: {
-      name: "",
-      username: "",
-      avatar: "NO ICON",
-    },
-    likes: [],
-    text: "",
-    time: "",
-  });
+  const [comment, setComment] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [liked, setLiked] = useState(false);
   const authHeader = useAuthHeader();
@@ -23,6 +16,7 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
 
   useEffect(() => {
     const fetchComments = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(
           `/posts/${postId}/comments/${commentId}`,
@@ -36,6 +30,8 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
         setLiked(alreadyLiked(response.data.likes));
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -131,6 +127,10 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
     }
   };
 
+  if (loading) {
+    return <ContentLoading />;
+  }
+
   return (
     <div className="bg-[#384754] shadow-md rounded-lg p-4 mb-4">
       <div className="flex items-center">
@@ -182,7 +182,8 @@ const Comment = ({ commentId, postId, author, onDelete, timeFormat }) => {
             ) : (
               <Heart className="mr-2" />
             )}
-            {comment.likes.length} {comment.likes.length === 1 ? "Like" : "Likes"}
+            {comment.likes.length}{" "}
+            {comment.likes.length === 1 ? "Like" : "Likes"}
           </button>
           {comment.user.userId === authUser.userId && (
             <button

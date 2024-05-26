@@ -5,6 +5,7 @@ import autosize from "autosize";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "../../context/AuthUserContext";
+import CreateLoading from "../../components/CreateLoading";
 const mdParser = new MarkdownIt();
 
 const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
@@ -15,7 +16,8 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
   const wordCountLimit = 2800;
   const authHeader = useAuthHeader();
   const { authUser } = useAuthUserContext();
-  const [profileImage, setProfileImage] = useState("");
+  const [profileImage, setProfileImage] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -87,6 +89,7 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
 
   useEffect(() => {
     const fetchProfileImage = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`/users/${authUser.userId}`, {
           headers: {
@@ -104,12 +107,17 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
         }
       } catch (error) {
         console.error("Error fetching user", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProfileImage();
   }, [authUser.userId, authHeader]);
 
+  if (loading) {
+    return <CreateLoading />;
+  }
   return (
     <form onSubmit={handleSubmit}>
       <div className="bg-[#384754] shadow-md mt-5 rounded-lg p-4">
@@ -129,7 +137,9 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
               />
             ) : (
               <textarea
-                className={`bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg ${largeText ? "h-svh" : ""}`}
+                className={`bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg ${
+                  largeText ? "h-svh" : ""
+                }`}
                 value={content}
                 onChange={handleContentChange}
                 placeholder="What's cooking?"

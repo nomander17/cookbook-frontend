@@ -16,6 +16,7 @@ export function SideBar({ children }) {
   const [profileImage, setProfileImage] = useState("");
   const [user, setUser] = useState({});
   const authHeader = useAuthHeader();
+  const [loading, setLoading] = useState(true);
 
   const logOut = () => {
     return () => {
@@ -23,10 +24,11 @@ export function SideBar({ children }) {
       setAuthUser(null);
       navigate("/");
     };
-  }
+  };
 
   useEffect(() => {
     const fetchProfileImage = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`/users/${authUser.userId}`, {
           headers: {
@@ -45,12 +47,13 @@ export function SideBar({ children }) {
         }
       } catch (error) {
         console.error("Error fetching user", error);
+      } finally {
+        setLoading(false);
       }
     };
-  
+
     fetchProfileImage();
   }, [authUser.userId, authHeader]);
-  
 
   return (
     <aside className={`h-screen z-10 transform relative`}>
@@ -81,32 +84,51 @@ export function SideBar({ children }) {
         <SideBarContext.Provider value={{ expanded }}>
           <ul className="flex-1 mt-4 px-3">{children}</ul>
         </SideBarContext.Provider>
-
-        <div className="border-t border-gray-600 flex p-3">
-          <img
-            src={profileImage}
-            alt="User avatar"
-            className="w-12 h-12 rounded-md hover:cursor-pointer object-cover"
-            onClick={()=>{navigate("/profile")}}
-          />
-          <div
-            className={`
+        {loading ? (
+          // loading user
+          <div className="border-t border-gray-600 flex p-3 animate-pulse">
+            <div className="w-12 h-12 rounded-md bg-gray-300"></div>
+            <div
+              className={`
+          flex justify-between items-center
+          overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
+        `}
+            >
+              <div className="leading-4 ml-3">
+                <div className="h-4 w-32 bg-gray-300 rounded"></div>
+                <div className="h-3 w-24 bg-gray-300 rounded mt-2"></div>
+              </div>
+              <div className="h-6 w-6 bg-gray-300 rounded-full ml-auto"></div>
+            </div>
+          </div>
+        ) : (
+          <div className="border-t border-gray-600 flex p-3">
+            <img
+              src={profileImage}
+              alt="User avatar"
+              className="w-12 h-12 rounded-md hover:cursor-pointer object-cover"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            />
+            <div
+              className={`
               flex justify-between items-center
               overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
             `}
-          >
-            <div className="leading-4 text-white">
-              <h4 className="font-semibold text-sm text-white">{user.name}</h4>
-              <span className="text-sm text-gray-600">@{user.username}</span>
-            </div>
-            <div className="hover:cursor-pointer">
-              <LogOut
-                color="white"
-                onClick={logOut()}
-              />
+            >
+              <div className="leading-4 text-white">
+                <h4 className="font-semibold text-sm text-white">
+                  {user.name}
+                </h4>
+                <span className="text-sm text-gray-600">@{user.username}</span>
+              </div>
+              <div className="hover:cursor-pointer">
+                <LogOut color="white" onClick={logOut()} />
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </nav>
     </aside>
   );

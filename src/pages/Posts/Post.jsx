@@ -7,24 +7,13 @@ import { absoluteTime, relativeTime } from "../Home/timeFormat";
 import MarkdownIt from "markdown-it";
 import useAuthHeader from "react-auth-kit/hooks/useAuthHeader";
 import { useAuthUserContext } from "./../../context/AuthUserContext";
+import ContentLoading from "../../components/ContentLoading";
 
 const mdParser = new MarkdownIt();
 
 const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
-  const [post, setPost] = useState({
-    user: {
-      name: "",
-      username: "",
-      avatar: "NO ICON",
-    },
-    likes: [
-      {
-        user: {
-          userId: 0,
-        },
-      },
-    ],
-  });
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
@@ -34,6 +23,7 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
 
   useEffect(() => {
     const fetchPost = async () => {
+      setLoading(true);
       try {
         const response = await axios.get(`/posts/${postId}`, {
           headers: {
@@ -45,9 +35,10 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
         console.log("Fetching post ", postId);
       } catch (error) {
         console.error(`Error fetching post ${postId}: `, error);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchPost();
     // eslint-disable-next-line
   }, [postId]);
@@ -172,6 +163,10 @@ const Post = ({ postId, timeFormat, onClickEnabled, onDelete, truncate }) => {
     }
     return "";
   };
+
+  if (loading) {
+    return <ContentLoading />;
+  }
 
   return (
     <div className="bg-[#384754] shadow-md rounded-lg p-4 mb-4">
