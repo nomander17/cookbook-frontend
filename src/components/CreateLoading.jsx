@@ -13,9 +13,9 @@ const CreateLoading = () => {
       </div>
       <div className="mt-4">
         <div className="flex flex-wrap items-center justify-between">
-          <div className="h-8 w-24 bg-gray-300 rounded mb-2 sm:mb-0"></div>
-          <div className="h-8 w-24 bg-gray-300 rounded mb-2 sm:mb-0 sm:ml-2"></div>
-          <div className="h-8 w-16 bg-gray-300 rounded mb-2 ml-2 md:mb-0 md:ml-4"></div>
+          <div className="h-8 w-24 bg-gray-300 rounded mb-2"></div>
+          <div className="h-8 w-24 bg-gray-300 rounded mb-2 ml-2"></div>
+          <div className="h-8 w-16 bg-gray-300 rounded mb-2 ml-2"></div>
           <div className="h-8 w-24 bg-gray-300 rounded ml-auto"></div>
         </div>
       </div>
