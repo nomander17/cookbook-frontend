@@ -8,15 +8,11 @@ import useNotification from "../../hooks/useNotification";
 import { useNavigate } from "react-router-dom";
 import useSignOut from "react-auth-kit/hooks/useSignOut";
 import useSignIn from "react-auth-kit/hooks/useSignIn";
+import ProfileLoading from "./ProfileLoading";
 
 export default function ProfileComponent() {
-  const [user, setUser] = useState({
-    userId: 0,
-    email: "",
-    username: "",
-    name: "",
-    avatar: "NO AVATAR",
-  });
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [editingUser, setEditingUser] = useState({
     userId: 0,
     email: "",
@@ -36,6 +32,7 @@ export default function ProfileComponent() {
 
   useEffect(() => {
     async function fetchProfile() {
+      setLoading(true);
       try {
         if (authUser.userId) {
           const response = await axios.get(
@@ -57,6 +54,8 @@ export default function ProfileComponent() {
       } catch (error) {
         console.error();
         showNotification("error", error.response.data);
+      } finally {
+        setLoading(false);
       }
     }
     fetchProfile();
@@ -231,89 +230,93 @@ export default function ProfileComponent() {
           )}
         </div>
       </div>
-      <div className="flex flex-col md:flex-row items-center">
-        <div className="relative mb-6 md:mb-0 md:mr-8">
-          <img
-            src={isEditing ? handleSelectedImagePreview() : getProfileImage()}
-            alt={isEditing ? "Selected" : "Profile"}
-            className="inline-block h-32 w-32 rounded-full object-cover"
-          />
-          {isEditing && (
-            <label
-              htmlFor="imageInput"
-              className="absolute bottom-0 right-0 cursor-pointer"
-            >
-              <div className="flex items-center text-white bg-blue-500 px-2 py-1 rounded-full shadow-md transition duration-300 hover:bg-blue-600">
-                <Image className="h-4 w-4 mr-1" />
-                <span className="text-xs font-medium">Change</span>
-              </div>
-              <input
-                id="imageInput"
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="hidden"
-              />
-            </label>
-          )}
-        </div>
-        <div className="w-full md:w-3/4 ml-auto">
-          {isEditing ? (
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                value={editingUser.name}
-                onChange={handleInputChange}
-                className="w-full text-lg mb-2 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Name"
-              />
-              <input
-                type="text"
-                name="username"
-                value={editingUser.username}
-                onChange={handleInputChange}
-                className="w-full text-lg mb-2 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Username"
-              />
-              <input
-                type="email"
-                name="email"
-                value={editingUser.email}
-                onChange={handleInputChange}
-                className="w-full text-lg mb-4 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Email"
-              />
-              <div className="flex justify-end">
-                {selectedImage && (
+      {loading ? (
+        <ProfileLoading />
+      ) : (
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="relative mb-6 md:mb-0 md:mr-8">
+            <img
+              src={isEditing ? handleSelectedImagePreview() : getProfileImage()}
+              alt={isEditing ? "Selected" : "Profile"}
+              className="inline-block h-32 w-32 rounded-full object-cover"
+            />
+            {isEditing && (
+              <label
+                htmlFor="imageInput"
+                className="absolute bottom-0 right-0 cursor-pointer"
+              >
+                <div className="flex items-center text-white bg-blue-500 px-2 py-1 rounded-full shadow-md transition duration-300 hover:bg-blue-600">
+                  <Image className="h-4 w-4 mr-1" />
+                  <span className="text-xs font-medium">Change</span>
+                </div>
+                <input
+                  id="imageInput"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
+          <div className="w-full md:w-3/4 ml-auto">
+            {isEditing ? (
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  value={editingUser.name}
+                  onChange={handleInputChange}
+                  className="w-full text-lg mb-2 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Name"
+                />
+                <input
+                  type="text"
+                  name="username"
+                  value={editingUser.username}
+                  onChange={handleInputChange}
+                  className="w-full text-lg mb-2 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Username"
+                />
+                <input
+                  type="email"
+                  name="email"
+                  value={editingUser.email}
+                  onChange={handleInputChange}
+                  className="w-full text-lg mb-4 p-2 pl-4 text-white bg-[#2c3a47] rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Email"
+                />
+                <div className="flex justify-end">
+                  {selectedImage && (
+                    <button
+                      className="bg-blue-500 text-white mr-4 px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+                      onClick={handleRemoveImage}
+                    >
+                      Clear Image
+                    </button>
+                  )}
                   <button
-                    className="bg-blue-500 text-white mr-4 px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
-                    onClick={handleRemoveImage}
+                    type="submit"
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
                   >
-                    Clear Image
+                    Save
                   </button>
-                )}
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
-                >
-                  Save
-                </button>
+                </div>
+              </form>
+            ) : (
+              <div className="bg-[#2c3a47] text-center rounded-lg p-4">
+                <div className="text-2xl font-bold text-white mb-1">
+                  {user.name}
+                  <span className="text-lg font-normal text-gray-300 mb-4">
+                    &nbsp; @{user.username}
+                  </span>
+                </div>
+                <p className="text-white mb-2">{user.email}</p>
               </div>
-            </form>
-          ) : (
-            <div className="bg-[#2c3a47] text-center rounded-lg p-4">
-              <div className="text-2xl font-bold text-white mb-1">
-                {user.name}
-                <span className="text-lg font-normal text-gray-300 mb-4">
-                  &nbsp; @{user.username}
-                </span>
-              </div>
-              <p className="text-white mb-2">{user.email}</p>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex justify-center self-center mt-8">
         {/* delete button */}
         <button
