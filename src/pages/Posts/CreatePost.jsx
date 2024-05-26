@@ -131,19 +131,18 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
           <div className="flex-1">
             {isPreviewMode ? (
               <div
-                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-prewrap rounded-lg markdown-body"
+                className="bg-transparent p-3 text-offwhite font-medium text-lg w-full text-left whitespace-pre-line rounded-lg markdown-body"
                 dangerouslySetInnerHTML={{ __html: mdParser.render(content) }}
               />
             ) : (
               <textarea
-                className={`bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg ${
+                className={`bg-transparent p-3 text-offwhite font-medium text-lg w-full focus:outline-none focus:ring-2 focus:ring-accent rounded-lg max-h-52 ${
                   largeText ? "h-svh" : ""
                 }`}
                 value={content}
                 onChange={handleContentChange}
                 placeholder="What's cooking?"
                 ref={(textarea) => autosize(textarea)}
-                style={{ maxHeight: "200px" }}
               ></textarea>
             )}
           </div>
@@ -206,7 +205,7 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
 
             {/* Word count */}
             <span
-              className={`bg-blue-600 text-white py-2 px-4 rounded-lg flex items-center transition duration-300 text-sm mb-2 ml-2 md:mb-0 md:ml-4
+              className={`bg-blue-600 text-white py-2 px-4 rounded-lg items-center transition duration-300 text-sm mb-2 ml-2 md:mb-0 md:ml-4 hidden md:flex
         ${wordCount > wordCountLimit ? "bg-red-600" : ""}
       `}
             >
@@ -214,7 +213,7 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
             </span>
 
             {/* Post button */}
-            <div className="ml-auto my-auto">
+            <div className="ml-auto mb-2">
               <button
                 type="submit"
                 className="bg-blue-600 hover:bg-white hover:text-blue-600 text-white font-bold py-2 px-4 rounded-full flex items-center transition duration-300 cursor-pointer
@@ -227,6 +226,13 @@ const CreatePost = ({ setPosts, largeText, onPost, showNotification }) => {
               </button>
             </div>
           </div>
+          <div
+              className={`bg-blue-600 text-white py-2 px-4 rounded-lg items-center transition duration-300 text-sm mb-2 flex md:hidden w-fit ml-auto
+        ${wordCount > wordCountLimit ? "bg-red-600" : ""}
+      `}
+            >
+              {wordCount}/{wordCountLimit}
+            </div>
         </div>
       </div>
     </form>
